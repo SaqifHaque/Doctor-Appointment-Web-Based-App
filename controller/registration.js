@@ -59,6 +59,9 @@ router.post('/', [
         // console.log("validation failed");
     } else {
         console.log("Validation ok")
+        const pincode = Math.floor(1000 + Math.random() * 9000).toString();
+        res.cookie('pin', pincode);
+        console.log(pincode);
         res.redirect('/pincode');
         // var user = {
         //     username: req.body.username,

@@ -2,8 +2,10 @@ const express = require('express');
 const userModel = require.main.require('./models/crud-model');
 const router = express.Router();
 
+var msg = "";
+
 router.get('/', (req, res) => {
-    res.render('index/login')
+    res.render('index/login', { msg: msg });
 })
 
 router.post('/', (req, res) => {
@@ -15,16 +17,15 @@ router.post('/', (req, res) => {
 
     userModel.validate(user, function(status) {
         if (status) {
-            console.log("success");
-            res.cookie('uname', req.body.email);
+            msg = "";
+            res.cookie('email', req.body.email);
             res.redirect('/registration');
         } else {
+            msg = "Unauthorized";
+            res.render('index/login', { msg: msg });
             console.log("Failed");
-            res.redirect('/login');
-            // res.send("<h1>Error in login</h1>")
         }
     });
-
 })
 
 module.exports = router;
