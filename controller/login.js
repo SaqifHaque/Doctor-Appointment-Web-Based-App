@@ -21,6 +21,7 @@ router.post('/', (req, res) => {
         } else {
             console.log("Failed");
             res.redirect('/login');
+            // res.send("<h1>Error in login</h1>")
         }
     });
 

@@ -24,6 +24,7 @@
 
     <!-- Main CSS-->
     <link href="assets/Index/css/main.css" rel="stylesheet" media="all">
+    <link href="assets/Index/js/toastr.min.css" rel="stylesheet">
 </head>
 
 <body>
@@ -37,13 +38,13 @@
                             <div class="col-2">
                                 <div class="input-group">
                                     <label class="label">User Name</label>
-                                    <input class="input--style-4" type="text" name="username">
+                                    <input id="uname" class="input--style-4" type="text" name="username">
                                 </div>
                             </div>
                             <div class="col-2">
                                 <div class="input-group">
                                     <label class="label">Email</label>
-                                    <input class="input--style-4" type="email" name="email">
+                                    <input id="email" class="input--style-4" type="email" name="email">
                                 </div>
                             </div>
                         </div>
@@ -52,7 +53,7 @@
                                 <div class="input-group">
                                     <label class="label">Phone Number</label>
                                     <div class="input-group-icon">
-                                        <input class="input--style-4" type="password" name="phone">
+                                        <input id="phone" class="input--style-4" type="text" name="phone" placeholder="+880-xxxxxxxxxxx">
                                     </div>
                                 </div>
                             </div>
@@ -76,21 +77,21 @@
                             <div class="col-2">
                                 <div class="input-group">
                                     <label class="label">Password</label>
-                                    <input class="input--style-4" type="password" name="password">
+                                    <input id="pass" class="input--style-4" type="password" name="password">
                                 </div>
                             </div>
                             <div class="col-2">
                                 <div class="input-group">
                                     <label class="label">Confirm Password</label>
-                                    <input class="input--style-4" type="password" name="confirmpass">
+                                    <input id="confpass" class="input--style-4" type="password" name="confirmpass">
                                 </div>
                             </div>
                         </div>
                         <div class="input-group">
                             <label class="label">Blood Group</label>
                             <div class="rs-select2 js-select-simple select--no-search">
-                                <select name="bloodgroup">
-                                    <option disabled="disabled" selected="selected">Choose option</option>
+                                <select id="bgroup" name="bloodgroup">
+                                    <option value="" selected="selected">Choose option</option>
                                     <option value="A+">A+</option>
                                     <option value="A-">A-</option>
                                     <option value="B+">B+</option>
@@ -104,7 +105,7 @@
                             </div>
                         </div>
                         <div class="p-t-15">
-                            <button class="btn btn--radius-2 btn--blue" type="submit">Submit</button>
+                            <button id="button" class="btn btn--radius-2 btn--blue" type="submit">Submit</button>
                         </div>
                     </form>
                 </div>
@@ -121,6 +122,57 @@
 
     <!-- Main JS-->
     <script src="assets/Index/js/global.js"></script>
+    <script src="assets/Index/js/toastr.min.js"></script>
+    <script>
+        $('#button').on('click', function() {
+            toastr.options = {
+                "closeButton": false,
+                "debug": false,
+                "newestOnTop": false,
+                "progressBar": false,
+                "positionClass": "toast-top-right",
+                "preventDuplicates": false,
+                "onclick": null,
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "timeOut": "5000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            }
+            var mailformat = /^w+([.-]?w+)*@w+([.-]?w+)*(.w{2,3})+$/;
+
+            let uname = document.getElementById("uname").value;
+            let phone = document.getElementById("phone").value;
+            let email = document.getElementById("email").value;
+            let pass = document.getElementById("pass").value;
+            let confpass = document.getElementById("confpass").value;
+            let bgroup = document.getElementById("bgroup").value;
+
+            if (uname == "" || uname.length <= 3) {
+                toastr["error"]("Please,Provide Valid UserName")
+            }
+            if (phone.length != 15) {
+                toastr["error"]("Please,Provide Valid Phone Number")
+            }
+            if (email == "" || email.match(mailformat)) {
+                toastr["error"]("Please,Provide Valid Email")
+            }
+            if (pass == "" || pass.length <= 3) {
+                toastr["error"]("Please,Provide Valid password")
+            }
+            if (confpass == "" || confpass != pass) {
+                toastr["error"]("Confirm Password doesn't match with Password")
+            }
+            if (bgroup == "") {
+                toastr["error"]("Please select a Blood Group")
+            }
+
+
+        })
+    </script>
 
 </body>
 <!-- This templates was made by Colorlib (https://colorlib.com) -->
