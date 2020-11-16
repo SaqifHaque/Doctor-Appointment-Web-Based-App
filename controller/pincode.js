@@ -17,7 +17,15 @@ router.post('/', (req, res) => {
 
     if (req.cookies['pin'] == req.body.pincode) {
         console.log("Pincode matched");
-        res.redirect('/login');
+        userModel.verifyUser(req.cookies['verification'], function(status) {
+            if (status) {
+                res.clearCookie('pin');
+                res.clearCookie('verification');
+                res.redirect('/login');
+            } else {
+                console.log("Server Error")
+            }
+        });
     } else {
         console.log("wrong Pincode");
     }

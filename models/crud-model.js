@@ -51,5 +51,19 @@ module.exports = {
         db.execute(sql, function(status) {
             callback(status);
         });
-    }
+    },
+    verifyUser: function(email, callback) {
+        var verified = "verified";
+        var sql = "update user set type='" + verified + "' where email='" + email + "'";
+        db.execute(sql, function(status) {
+            callback(status);
+        });
+    },
+    getByEmail: function(email, callback) {
+        var sql = "select * from user where id= '" + id + "'";
+        db.getResults(sql, function(results) {
+            callback(results);
+        });
+
+    },
 }

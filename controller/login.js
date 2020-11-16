@@ -14,12 +14,21 @@ router.post('/', (req, res) => {
         email: req.body.email,
         password: req.body.password
     };
-
     userModel.validate(user, function(status) {
         if (status) {
             msg = "";
             res.cookie('email', req.body.email);
-            res.redirect('/registration');
+            userModel.getByEmail(user.email, function(results) {
+                if (results[0].type == "Admin") {
+                    // res.redirect('/registration');
+                } else if (results[0].type == "Doctor") {
+                    //res.redirect('/registration');
+                } else if (results[0].type == "Patient") {
+                    //res.redirect('/registration');
+                } else if (results[0].type == "Receptionist") {
+                    //res.redirect('/registration');
+                }
+            })
         } else {
             msg = "Unauthorized";
             res.render('index/login', { msg: msg });
