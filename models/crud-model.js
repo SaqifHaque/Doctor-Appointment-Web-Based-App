@@ -13,7 +13,7 @@ module.exports = {
         });
     },
     getById: function(id, callback) {
-        // var sql = "select * from user where id= '" + id + "'";
+        var sql = "select * from users where id= '" + id + "'";
         db.getResults(sql, function(results) {
             callback(results);
         });
@@ -54,16 +54,36 @@ module.exports = {
     },
     verifyUser: function(email, callback) {
         var verified = "verified";
-        var sql = "update user set type='" + verified + "' where email='" + email + "'";
+        var sql = "update users set type='" + verified + "' where email='" + email + "'";
         db.execute(sql, function(status) {
             callback(status);
         });
     },
     getByEmail: function(email, callback) {
-        var sql = "select * from user where id= '" + id + "'";
+        var sql = "select * from users where email= '" + email + "'";
         db.getResults(sql, function(results) {
             callback(results);
         });
 
     },
+    getByType: function(type, callback) {
+        var sql = "select * from users where type= '" + type + "'";
+        db.getResults(sql, function(results) {
+            callback(results);
+        });
+    },
+    getDoctors: function(callback) {
+        var sql = "select * from doctor_info JOIN users on doctor_info.u_Id=users.id";
+        db.getResults(sql, function(results) {
+            callback(results);
+        });
+
+    },
+    getDoctorById: function(id, callback) {
+        var sql = "select * from doctor_info JOIN users on doctor_info.u_Id=users.id where doctor_info.d_Id='" + id + "'";
+        db.getResults(sql, function(results) {
+            callback(results);
+        });
+
+    }
 }

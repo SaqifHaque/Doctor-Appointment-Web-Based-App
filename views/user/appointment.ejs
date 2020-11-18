@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Better Call Doc</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="assets/Home/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="assets/Home/css/heroic-features.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+</head>
+
+<body>
+    <nav id="navbar" class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+    </nav>
+    <h4>Username:
+        <%= Doctor[0].username %>
+    </h4>
+    <br>
+    <h4>Specialization:
+        <%= Doctor[0].specialization %>
+    </h4>
+    <br>
+    <h4>Email:
+        <%= Doctor[0].email %>
+    </h4>
+    <br>
+    <h4>availability:
+        <%= Doctor[0].availability %>
+    </h4>
+    <br>
+    <div class="rs-select2 js-select-simple select--no-search">
+        <select id="bgroup" name="bloodgroup">
+            <option value="" selected="selected">Choose option</option>
+            <% for(const d of date){ %>
+                <option value="<%= d %>"><%= d %></option> 
+                <% } %>
+           
+        </select>
+        <div class="select-dropdown"></div>
+    </div>
+    </div>
+
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="assets/Home/vendor/jquery/jquery.min.js"></script>
+    <script src="assets/Home/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script>
+        $("#navbar").load("userdash/navbar");
+        var date = $('#datepicker').datepicker('getDate');
+    </script>
+
+</body>
+
+</html>

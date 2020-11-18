@@ -6,6 +6,7 @@ const cookieParser = require('cookie-parser');
 const registration = require('./controller/registration');
 const login = require('./controller/login');
 const pincode = require('./controller/pincode');
+const userdash = require('./controller/userdash');
 const app = express();
 const toastr = require('express-toastr');
 require('dotenv').config();
@@ -23,6 +24,7 @@ app.use(toastr());
 app.use('/registration', registration);
 app.use('/login', login);
 app.use('/pincode', pincode);
+app.use('/userdash', userdash);
 
 // app.use('/login', login);
 // app.use('/home', home);

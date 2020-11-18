@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Better Call Doc</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="assets/Home/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="assets/Home/css/heroic-features.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+</head>
+
+<body>
+    <nav id="navbar" class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+    </nav>
+    <!-- Page Content -->
+    <div class="container">
+
+        <!-- Jumbotron Header -->
+        <header class="jumbotron my-4">
+            <h6 style="text-align:center" class="text-light">Welcome to </h6>
+            <h2 style="text-align:center" class="display-4 text-light">Better Call Doc</h2>
+            <p style="text-align:center" class="text-light">Start taking appointments!!</p>
+            <div id="namespace" class="center">
+                <!-- <a href="#" class="btn btn-warning btn-lg">Join For Free!</a> -->
+            </div>
+
+        </header>
+
+        <!-- Page Features -->
+        <div id="card" class="row text-center">
+            <% for(const sub of Doctors){ %>
+                <div class="col-lg-3 col-md-6 mb-2">
+                    <div class="card h-100">
+                        <img class="card-img-top" src="..." alt="Card image cap">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <%= sub.username %>
+                            </h5>
+                            <p class="card-text">
+                                <%= sub.specialization %>
+                            </p>
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                <%= sub.email %>
+                            </li>
+                            <li class="list-group-item">
+                                <%= sub.qualification %>
+                            </li>
+                            <li class="list-group-item">
+                                <%= sub.availability %>
+                            </li>
+                        </ul>
+                        <div class="card-body">
+                            <a href="#" class="card-link">Take Appointment</a>
+                        </div>
+                    </div>
+                </div>
+                <% } %>
+        </div>
+
+    </div>
+    <!-- /.container -->
+
+    <!-- Footer -->
+    <footer class="py-5 bg-dark">
+        <div class="container">
+            <p class="m-0 text-center text-white">Copyright &copy; Your Website 2020</p>
+        </div>
+        <!-- /.container -->
+    </footer>
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="assets/Home/vendor/jquery/jquery.min.js"></script>
+    <script src="assets/Home/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script>
+        $("#navbar").load("userdash/navbar");
+    </script>
+
+
+    <!-- <script type="text/javascript" src="Navbar.js"></script> -->
+
+</body>
+
+</html>
