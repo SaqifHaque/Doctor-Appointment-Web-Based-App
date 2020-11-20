@@ -28,7 +28,7 @@
         <main class="px-3">
             <div class="text-4xl sm:text-5xl text-center my-10">Our Top Doctors</div>
 
-            <div class="grid md:grid-cols-3 gap-8 m-5 max-w-5xl m-auto">
+            <div id="doctor" class="grid md:grid-cols-3 gap-8 m-5 max-w-5xl m-auto">
                 <% for(const sub of Doctors){ %>
                     <div class="bg-white">
                         <img src="https://via.placeholder.com/150" alt="" class="w-full h-48 sm:h-56 object-cover" />
@@ -75,6 +75,25 @@
     <script src="assets/Home/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script>
         $("#navbar").load("userdash/navbar");
+
+        // let doctors = "<%= Doctors %>";
+        // let mainDiv = document.getElementById("card");
+
+        // foreach(d in doctors) {
+
+        //     let div1 = document.createElement("div");
+        //     div1.classList.add("bg-white");
+
+        //     let pic = document.createElement("img");
+        //     pic.src = "";
+        //     pic.alt = "https://via.placeholder.com/150";
+        //     pic.classList.add("w-full", "h-48", "sm:h-56", "object-cover");
+
+        //     let div2 = document.createElement("div");
+        //     div1.classList.add("bg-white");
+
+
+        // }
     </script>
 
 

@@ -6,10 +6,6 @@ const router = express.Router();
 router.get('/', (req, res) => {
 
     // if (req.cookies['cred'] != null) {
-    var arr = [];
-    var specialization = "";
-    var qualification = "";
-    var avaibality = "";
     userModel.getDoctors(function(results) {
             res.render('user/userdash', { Doctors: results });
         })
@@ -98,9 +94,13 @@ router.post('/review/:id', (req, res) => {
 })
 router.get('/search/:str', (req, res) => {
 
-    console.log(req.params.str);
-    res.render('user/search');
+    userModel.getDoctors(function(results) {
+        const result = results.filter(doc => doc.username.toLowerCase() === req.params.str.toLowerCase() ||
+            doc.specialization.toLowerCase() === req.params.str.toLowerCase());
+        console.log(result);
+        res.render('user/search', { Doctors: result });
+    })
 
 })
-router.get
+
 module.exports = router;
