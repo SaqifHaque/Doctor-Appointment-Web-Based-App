@@ -26,11 +26,6 @@ app.use('/login', login);
 app.use('/pincode', pincode);
 app.use('/userdash', userdash);
 
-// app.use('/login', login);
-// app.use('/home', home);
-// app.use('/logout', logout);
-// app.use('/user', user);
-
 //route
 app.get('/', (req, res) => {
     res.send('Hello from express server');

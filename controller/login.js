@@ -22,12 +22,13 @@ router.post('/', (req, res) => {
             userModel.getByEmail(user.email, function(results) {
                 res.cookie('uname', results[0].username);
                 res.cookie('type', results[0].type);
+                res.cookie('Id', results[0].id);
                 if (results[0].type == "Admin") {
                     // res.redirect('/registration');
                 } else if (results[0].type == "Doctor") {
                     //res.redirect('/registration');
                 } else if (results[0].type == "Patient") {
-                    //res.redirect('/registration');
+                    res.redirect('/userdash');
                 } else if (results[0].type == "Receptionist") {
                     //res.redirect('/registration');
                 }
