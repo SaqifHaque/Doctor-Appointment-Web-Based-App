@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<head>
+		<%- include('../partials/head'); %>
+	</head>
+	<title>Admin Page</title>
+</head>
+<body class="container">
+	<header>
+		<%- include('../partials/header'); %>
+	</header>
+	<main>
+
+	<div class="jumbotron">
+		<h2>Admin Dashboard</h2>
+	</div>
+	</main>
+
+	
+	<a href="/admin/addNewDoctor">Add New Doctor</a><br>
+	<!-- <a href="/admin/createDoctor">Create Doctor</a><br> -->
+	<!-- <a href="/admin/assignDoctor">Assign Doctor </a><br> -->
+	
+	<li class="nav-item">
+	 	<a class="nav-link" Name: <%= user.name %> <br>
+            UserName: <%= user.username %> <br>
+		 </li>
+		 <li class="nav-item">
+			<a class="nav-link"Email: <%= user.email %> <br>
+				Email: <%= user.email %> <br>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link"	phonenumber: <%= user.phonenumber%> <br>
+					phone: <%= user.phone %> <br>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" Password: <%= user.password %> <br>
+						Password: <%= user.password %> <br>
+					</li>
+
+	<footer>
+		<%- include('../partials/footer'); %>
+	</footer>
+</body>
+
+</html>

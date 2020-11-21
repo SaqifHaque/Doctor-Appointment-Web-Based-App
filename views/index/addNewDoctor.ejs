@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Add New Doctor</title>
+</head>
+
+<body>
+	<h2>Add New Doctor</h2>
+	<a href="/admin">Home</a> |
+	<a href="/logout">Logout</a><br><br>
+	<a href="/admin/profile">Edit Profile</a><br>
+	<a href="/admin/addNewDoctor">Add New Doctor</a><br>
+	<a href="/admin/assignDoctor">Assign Doctor</a><br>
+	<a href="/admin/view_Doctor">Doctor</a><br>
+	<a href="/admin/view_Receptionist">Receptionist</a><br>
+	<a href="/admin/view_Patient">Patient</a><br>
+	<a href="/admin/view_Booked">Booked slot</a><br>
+	<a href="/admin/view_Available">Available slot</a><br>
+
+	<form method="post">
+		<table border="1">
+			
+			<tr>
+				<td>
+				Id:
+			</td>
+			<td> <input type="text" name="id" value="<%= user.id %>"required></td>
+		</tr>
+				<tr>
+					<td>
+					Username:
+				</td>
+				<td> <input type="text" name="uname" value="<%= user.username %>" required></td>
+			</tr>
+			
+		
+			<tr>
+				<td>
+					Email :
+				</td>
+				<td><input type="text" name="email" value="<%= user.email %>" required></td>
+			</tr>
+			<tr>
+				<td>
+					Blood Group:
+				</td>
+				<td><input type="text" name="bloodgroup" value="<%= user.bloodgroup%>" required></td>
+			</tr>
+			<tr>
+				<td>
+					Phone :
+				</td>
+				<td><input type="text" name="phonenumber" value="<%= user.phonenumber %>" required></td>
+			</tr>
+			<tr>
+				<td>
+					Profile Picture:
+				</td>
+				<td><input type="text" name="profilepic" value="<%= user.profilepic%>" required></td>
+			</tr>
+				
+			<tr>
+				<td>
+					Type:
+				</td>
+				<td><input type="text" name="type" value="<%= user.type%>" required></td>
+			</tr>
+			<tr>
+				<td>
+					status:
+				</td>
+				<td><input type="text" name="status" value="<%= user.status%>" required></td>
+			</tr>
+
+			<tr>
+				<td>
+					Gender:
+				</td>
+				<td>
+					<label for="Gender">Choose a Gender:</label>
+					<select name="gender" id="gender">
+	
+					  <option value="male">Male</option>
+					  <option value="female">Female</option>
+			
+			</td>
+			</tr>
+			
+
+			<tr>
+				<td>
+					Password:
+				</td>
+				<td><input type="password" name="password" required></td>
+			</tr>
+			<tr>
+				<td>
+					Confirm Password:
+				</td>
+				<td><input type="password" name="cpassword" required></td>
+			</tr>
+
+		</table>
+
+		<input type="Submit" name="" value="Submit"><br>
+
+	</form>
+</body>
+
+</html>

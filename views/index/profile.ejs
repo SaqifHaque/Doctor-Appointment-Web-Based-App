@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Edit Profile</title>
+</head>
+
+<body>
+	<h2>Edit Profile</h2>
+
+	<a href="/admin">Home</a>|
+	<a href="/logout">Logout</a><br><br>
+	<a href="/admin/profile">Edit Profile</a><br>
+	<a href="/admin/addNewDoctor">Add New Doctor</a><br>
+	<a href="/admin/assignDoctor">Assign doctor</a><br>
+	<a href="/admin/view_Doctor">Doctor</a><br>
+	<a href="/admin/view_Receptionist">Receptionist</a><br>
+	<a href="/admin/view_Patient">Patient</a><br>
+	<a href="/admin/view_Booked">Booked slot</a><br>
+	<a href="/admin/view_Available">Available slot</a><br>
+
+	<form method="post">
+		<table border="1">
+			
+			<td>Username: </td>
+			<td> <input type="text" name="uname" value="<%= user.username %>" readonly></td>
+			</tr>
+			<tr>
+				<td>Mail: </td>
+				<td> <input type="text" name="email" value="<%= user.email %>" required></td>
+			</tr>
+			<tr>
+				<td>Phone No: </td>
+				<td> <input type="text" name="phone" value="<%= user.phone %>" required></td>
+			</tr>
+			<tr>
+				<td>Password: </td>
+				<td> <input type="password" name="password" value="<%= user.password %>" required></td>
+			</tr>
+			<tr>
+				<td>Confirm Password:</td>
+				<td> <input type="password" name="cpassword" value="<%= user.password %>" required></td>
+			</tr>
+		</table>
+		<input type="submit" name="" value="update">
+	</form>
+</body>
+
+</html>

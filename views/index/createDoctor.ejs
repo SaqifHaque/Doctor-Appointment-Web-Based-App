@@ -1,0 +1,40 @@
+<html lang="en">
+    <body>
+
+
+%-include('./partial/nav.ejs') -%
+
+
+
+    </body>
+    <div class="create Doctor">
+        <form action="/createDoctor" method="post">
+        <label for="Title">Id: </label>
+        <input type="text" name="id" required>
+
+        <label for="Title">Email: </label>
+        <input type="text" name="email" required>
+        <label for="Title">phonnumber: </label>
+        <input type="text" name="phonnumber" required>
+        <label for="Title">Blood group: </label>
+        <input type="text" name="bloodgroup" value="<%= user.bloodgroup%>" required>
+        <label for="Title">dept: </label>
+        <input type="text" name="dept" value="<%= user.dept %>" required>
+        <label for="Gender">Choose a Gender:</label>
+					<select name="gender" id="gender">
+	
+					  <option value="male">Male</option>
+                      <option value="female">Female</option>
+                      <button> Submit</button>
+
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        </form>
+    </div>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Assign Doctor</title>
+</head>
+
+<body>
+	<h2>Assign Doctor</h2>
+
+	<a href="/home">home</a>|
+	<a href="/logout">Logout</a><br><br>
+	<a href="/admin/profile">Edit Profile</a><br>
+	<a href="/admin/addNewDoctor">Add New Doctor</a><br>
+	<a href="/admin/assignDoctor">Assign Doctor </a><br>
+	
+	<a href="/admin/view_Receptionist">Receptionist</a><br>
+	<a href="/admin/view_Patient">Patient</a><br>
+	<a href="/admin/view_Booked">Booked slot</a><br>
+	<a href="/admin/view_Available">Available slot</a><br><br>
+
+	<form method="post">
+		<table border="1">
+			<tr>
+				<td>
+					Id:
+				</td>
+				<td>
+					<select name="id">
+						<% for(var i=0; i < userlist.length; i++){ %>
+						<option value="<%= userlist[i].id%>"><%= userlist[i].id %></option>
+						<% }%>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td> Department:
+				</td>
+				<td>
+					<script>
+						function random_function() {
+							var a = document.getElementById("Post").value;
+							if (a === "MBBS") 
+							{
+								var arr = ["Surgery", "Opthalmology"];
+							} else if (a === "MBBS") {
+								var arr = ["Surgeon", "Medicine"];
+							
+							}
+							else if (a === "FCPS") 
+							{
+								var arr = ["Pathology", "Surgery"];
+							} 
+							
+							var string = "";
+
+							for (i = 0; i < arr.length; i++) 
+							{
+								string = string + "<option value=" + arr[i] + ">" + arr[i] + "</option>";
+							}
+							document.getElementById("output").innerHTML = string;
+						}
+					</script>
+					<select id="Post" name="qualification" onchange="random_function()">
+						<option value="">select option</option>
+						<option value="MBBS">Medicine</option>
+						<option value="FCPS">Surgery</option>
+						
+					</select>
+
+					<div>
+						<select id="output" name="post" value="output" onchange="random_function1()">
+					</div>
+				</td>
+			</tr>
+		</table>
+		<input type="Submit" name="" value="Submit">
+	</form>
+</body>
+
+</html>
