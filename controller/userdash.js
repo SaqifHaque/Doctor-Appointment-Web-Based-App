@@ -2,6 +2,7 @@ const express = require('express');
 const userModel = require.main.require('./models/crud-model');
 const ratingModel = require.main.require('./models/rating-model');
 const ambulanceModel = require.main.require('./models/ambulance-model');
+const appointmentModel = require.main.require('./models/appointment-model');
 const router = express.Router();
 const { check, validationResult } = require('express-validator');
 
@@ -86,7 +87,33 @@ router.post('/appointment/:id', [
             console.log(item);
         }
     } else {
-        res.redirect('../apptable');
+        var app = {
+            date: req.body.app_date,
+            time: req.body.app_time,
+            status: "pending",
+            d_Id: req.params.id,
+            u_Id: req.cookies["Id"],
+            p_Id: ""
+
+        }
+        appointmentModel.insert(app, function(status) {
+            if (status) {
+                var inv = {
+                    total: req.body.cost,
+                    transaction: req.body.tran,
+                    status: "pending",
+                }
+                appointmentModel.insertInvoice(inv, function(status) {
+                    if (status) {
+                        res.redirect('../apptable');
+                    } else {
+                        console.log("invoice error");
+                    }
+                })
+            } else {
+                console.log("error");
+            }
+        })
     }
 
 
@@ -142,10 +169,29 @@ router.get('/ambulance', (req, res) => {
 })
 router.get('/apptable', (req, res) => {
 
-    // ambulanceModel.getAmbulance(function(results) {
-    //     console.log(results);
-    res.render('user/apptable');
-    // })
+    var custom = [];
+
+    appointmentModel.getAppointments(function(results) {
+        if (results.length > 0) {
+            for (var i = 0; i < results.length; i++) {
+                var date = results[i].date;
+                var time = results[i].time;
+                var status = results[i].status;
+                userModel.getDoctorById(results[i].d_Id, function(result) {
+                    var doc = {
+                        name: result[0].username,
+                        date: date,
+                        time: time,
+                        status: status,
+                    }
+                    custom.push(doc);
+                    res.render('user/apptable', { app: custom });
+
+                })
+            }
+
+        }
+    })
 
 })
 

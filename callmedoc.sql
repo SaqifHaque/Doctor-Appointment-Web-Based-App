@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 21, 2020 at 12:44 PM
+-- Generation Time: Nov 21, 2020 at 03:03 PM
 -- Server version: 10.1.38-MariaDB
 -- PHP Version: 7.3.3
 
@@ -52,10 +52,19 @@ INSERT INTO `ambulances` (`a_Id`, `contact`, `location`, `type`, `price`) VALUES
 CREATE TABLE `appointments` (
   `ap_Id` int(5) NOT NULL,
   `date` varchar(50) NOT NULL,
+  `time` varchar(50) NOT NULL,
   `status` varchar(10) NOT NULL,
   `d_Id` int(11) NOT NULL,
-  `u_Id` int(11) NOT NULL
+  `u_Id` int(11) NOT NULL,
+  `p_Id` int(5) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `appointments`
+--
+
+INSERT INTO `appointments` (`ap_Id`, `date`, `time`, `status`, `d_Id`, `u_Id`, `p_Id`) VALUES
+(1, '26-11-2020', '14:00 -15:00', 'pending', 1, 6, 0);
 
 -- --------------------------------------------------------
 
@@ -69,6 +78,7 @@ CREATE TABLE `doctor_info` (
   `qualification` varchar(20) NOT NULL,
   `availability` varchar(20) NOT NULL,
   `time` varchar(50) NOT NULL,
+  `charge` varchar(10) NOT NULL,
   `u_Id` int(5) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -76,9 +86,22 @@ CREATE TABLE `doctor_info` (
 -- Dumping data for table `doctor_info`
 --
 
-INSERT INTO `doctor_info` (`d_Id`, `specialization`, `qualification`, `availability`, `time`, `u_Id`) VALUES
-(1, 'Neurologist', 'MBBS', 'Fri-Sat', '', 5),
-(2, 'Dentist', 'MBBS', 'sat-wed', '', 1);
+INSERT INTO `doctor_info` (`d_Id`, `specialization`, `qualification`, `availability`, `time`, `charge`, `u_Id`) VALUES
+(1, 'Neurologist', 'MBBS', 'Fri-Sat', '', '', 5),
+(2, 'Dentist', 'MBBS', 'sat-wed', '', '', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `invoices`
+--
+
+CREATE TABLE `invoices` (
+  `inv_Id` int(5) NOT NULL,
+  `total` varchar(50) NOT NULL,
+  `transaction` varchar(50) NOT NULL,
+  `status` varchar(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -153,6 +176,12 @@ ALTER TABLE `doctor_info`
   ADD UNIQUE KEY `u_Id` (`u_Id`);
 
 --
+-- Indexes for table `invoices`
+--
+ALTER TABLE `invoices`
+  ADD PRIMARY KEY (`inv_Id`);
+
+--
 -- Indexes for table `ratings`
 --
 ALTER TABLE `ratings`
@@ -178,13 +207,19 @@ ALTER TABLE `ambulances`
 -- AUTO_INCREMENT for table `appointments`
 --
 ALTER TABLE `appointments`
-  MODIFY `ap_Id` int(5) NOT NULL AUTO_INCREMENT;
+  MODIFY `ap_Id` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `doctor_info`
 --
 ALTER TABLE `doctor_info`
   MODIFY `d_Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `invoices`
+--
+ALTER TABLE `invoices`
+  MODIFY `inv_Id` int(5) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `ratings`
