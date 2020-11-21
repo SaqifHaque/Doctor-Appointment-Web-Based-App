@@ -177,6 +177,7 @@ router.get('/apptable', (req, res) => {
                 var time = results[i].time;
                 var status = results[i].status;
                 var doc = {};
+                var j = 0;
 
                 userModel.getDoctorById(results[i].d_Id, function(result) {
                     doc = {
@@ -185,12 +186,12 @@ router.get('/apptable', (req, res) => {
                         time: time,
                         status: status,
                     }
+                    c.push(doc);
+                    if (j == results.length - 1) {
+                        res.render('user/apptable', { app: c });
+                    }
+                    j++;
                 })
-                c.push(doc);
-                if (i == results.length - 1) {
-                    console.log("Hello");
-                    res.render('user/apptable', { app: c });
-                }
             }
 
         }
