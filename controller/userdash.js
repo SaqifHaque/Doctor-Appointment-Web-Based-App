@@ -169,25 +169,28 @@ router.get('/ambulance', (req, res) => {
 })
 router.get('/apptable', (req, res) => {
 
-    var custom = [];
-
     appointmentModel.getAppointments(function(results) {
         if (results.length > 0) {
+            var c = [];
             for (var i = 0; i < results.length; i++) {
                 var date = results[i].date;
                 var time = results[i].time;
                 var status = results[i].status;
+                var doc = {};
+
                 userModel.getDoctorById(results[i].d_Id, function(result) {
-                    var doc = {
+                    doc = {
                         name: result[0].username,
                         date: date,
                         time: time,
                         status: status,
                     }
-                    custom.push(doc);
-                    res.render('user/apptable', { app: custom });
-
                 })
+                c.push(doc);
+                if (i == results.length - 1) {
+                    console.log("Hello");
+                    res.render('user/apptable', { app: c });
+                }
             }
 
         }
