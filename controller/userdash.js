@@ -198,5 +198,10 @@ router.get('/apptable', (req, res) => {
     })
 
 })
+router.get('/myprofile', (req, res) => {
+
+    res.render('user/myprofile');
+
+})
 
 module.exports = router;
