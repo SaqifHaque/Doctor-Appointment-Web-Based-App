@@ -3,7 +3,7 @@ var db = require('./db');
 module.exports = {
 
 	validate: function (user, callback) {
-		var sql = "SELECT * FROM admininfo where username=? and password=?";
+		var sql = "SELECT * FROM users where username=? and password=?";
 		db.getResults(sql, [user.username, user.password], function (results) {
 			if (results.length > 0) {
 				callback(true);
@@ -13,7 +13,7 @@ module.exports = {
 		});
 	},
 	getByUname: function (username, callback) {
-		var sql = "select * from admininfo where username=?";
+		var sql = "select * from users  where username=?";
 		db.getResults(sql, [username], function (results) {
 			if (results.length > 0) {
 				callback(results[0]);
@@ -23,8 +23,8 @@ module.exports = {
 		});
 	},
 	updateProfile: function (user, callback) {
-		var sql = "update admininfo set name=?, username=?, password=?, email=?,phone=? where username=?";
-		db.execute(sql, [user.name, user.username, user.password, user.email, user.phone, user.username], function (status) {
+		var sql = "update users set username=?, password=?, email=?,phonenumber=? where username=?";
+		db.execute(sql, [user.username, user.password, user.email, user.phonenumber], function (status) {
 			if (status) {
 				callback(true);
 			} else {
@@ -33,8 +33,8 @@ module.exports = {
 		});
 	},
 	assignDoctor: function (user, callback) {
-		var sql = "update doctorinfo set dept=?, post=? where username=?";
-		db.execute(sql, [user.dept, user.post, user.username], function (status) {
+		var sql = "update doctor_info set qualification=? specialization=? where d_Id=?";
+		db.execute(sql, [user. qualification,user. specialization, user.d_Id], function (status) {
 			if (status) {
 				callback(true);
 			} else {
@@ -44,18 +44,13 @@ module.exports = {
 	},
 	insert: function (user, callback) {
 		console.log(user);
-		var sql = "insert into doctorinfo values(?,?,?,?,?,?,?,?,?,?,?)";
-		db.execute(sql, [user.fname, user.lname, user.username, user.password, user.email, user.phone, null, null, user.fathersName, user.nid, 'unblock'], function (status) {
-			if (status) {
-				console.log(user);
-				callback(true);
-			} else {
-				callback(false);
-			}
+		var sql =('', '" + user.username + "' , '" + user.email + "' ,'" + user.bloodgroup + "', '" + user.phone + "','" + user.password + "', '" + user.profilepic + "' ,'" + user.type + "' , '" + user.status + "','" + user.gender + "');
+		db.execute(sql,function (status) {
+			callback(status);
 		});
 	},
 	getAllDoctor: function (callback) {
-		var sql = "select * from doctorinfo";
+		var sql = "select * from users ";
 		db.getResults(sql, [], function (results) {
 			if (results.length > 0) {
 				callback(results);
@@ -65,7 +60,7 @@ module.exports = {
 		});
 	},
 	getAllReceptionist: function (callback) {
-		var sql = "select * from receptionistinfo";
+		var sql = "select * from users ";
 		db.getResults(sql, [], function (results) {
 			if (results.length > 0) {
 				callback(results);
@@ -75,7 +70,7 @@ module.exports = {
 		});
 	},
 	getAllPatient: function (callback) {
-		var sql = "select * from patientinfo";
+		var sql = "select * from users ";
 		db.getResults(sql, [], function (results) {
 			if (results.length > 0) {
 				callback(results);
@@ -86,7 +81,7 @@ module.exports = {
 	},
 
 	getDoctorProfile: function (username, callback) {
-		var sql = "select * from doctorinfo where username=?";
+		var sql = "select * from users  where username=?";
 		db.getResults(sql, username, function (results) {
 			if (results.length > 0) {
 				callback(results[0]);
@@ -96,7 +91,7 @@ module.exports = {
 		});
 	},
 	getPatientProfile: function (username, callback) {
-		var sql = "select * from patientinfo where username=?";
+		var sql = "select * from users where username=?";
 		db.getResults(sql, username, function (results) {
 			if (results.length > 0) {
 				callback(results[0]);
@@ -106,7 +101,7 @@ module.exports = {
 		});
 	},
 	getReceptionistProfile: function (username, callback) {
-		var sql = "select * from receptionistinfo where username=?";
+		var sql = "select * from users  where username=?";
 		db.getResults(sql, username, function (results) {
 			if (results.length > 0) {
 				callback(results[0]);
@@ -116,7 +111,7 @@ module.exports = {
 		});
 	},
 	getAllPendingPatient: function (callback) {
-		var sql = "select * from patientinfo where type=?";
+		var sql = "select * from users  where type=?";
 		db.getResults(sql, ['pending'], function (results) {
 			if (results.length > 0) {
 				callback(results);
@@ -126,7 +121,7 @@ module.exports = {
 		});
 	},
 	getAllPendingReceptionist: function (callback) {
-		var sql = "select * from receptionistinfo where type=?";
+		var sql = "select * from users  where type=?";
 		db.getResults(sql, ['pending'], function (results) {
 			if (results.length > 0) {
 				callback(results);
@@ -136,7 +131,7 @@ module.exports = {
 		});
 	},
 	getAllAvailableReceptionist: function (callback) {
-		var sql = "select * from receptionistinfo where type=?";
+		var sql = "select * from users where type=?";
 		db.getResults(sql, ['available'], function (results) {
 			if (results.length > 0) {
 				callback(results);
@@ -146,7 +141,7 @@ module.exports = {
 		});
 	},
 	getAllAvailablePatient: function (callback) {
-		var sql = "select * from patientinfo where type=?";
+		var sql = "select * from users where type=?";
 		db.getResults(sql, ['available'], function (results) {
 			if (results.length > 0) {
 				callback(results);
@@ -156,7 +151,7 @@ module.exports = {
 		});
 	},
 	getAllAvailableSlot: function (callback) {
-		var sql = "select * from slotinfo where status=?";
+		var sql = "select * from users where status=?";
 		db.getResults(sql, ['available'], function (results) {
 			console.log("caught");
 			if (results.length > 0) {
@@ -167,7 +162,7 @@ module.exports = {
 		});
 	},
 	getAllBookedSlot: function (callback) {
-		var sql = "select * from slotinfo where status=?";
+		var sql = "select * from users where status=?";
 		db.getResults(sql, ['booked'], function (results) {
 			if (results.length > 0) {
 				callback(results);
@@ -177,7 +172,7 @@ module.exports = {
 		});
 	},
 	deleteslot: function (id, callback) {
-		var sql = "delete from slotinfo where houseid=?";
+		var sql = "delete from users where slotid=?";
 		db.execute(sql, [id], function (status) {
 			if (status) {
 				callback(true);
@@ -187,7 +182,7 @@ module.exports = {
 		});
 	},
 receptionistStatus: function (user, callback) {
-		var sql = "update receptionistinfo set status=? where username=?";
+		var sql = "update users  set status=? where username=?";
 		db.execute(sql, [user.status, user.username], function (status) {
 			if (status) {
 				callback(true);
@@ -197,7 +192,7 @@ receptionistStatus: function (user, callback) {
 		});
 	},
 	patientStatus: function (user, callback) {
-		var sql = "update patientinfo set status=? where username=?";
+		var sql = "update users  set status=? where username=?";
 		db.execute(sql, [user.status, user.username], function (status) {
 			if (status) {
 				callback(true);
@@ -207,7 +202,7 @@ receptionistStatus: function (user, callback) {
 		});
 	},
 	doctorStatus: function (user, callback) {
-		var sql = "update doctorinfo set status=? where username=?";
+		var sql = "update users  set status=? where username=?";
 		db.execute(sql, [user.status, user.username], function (status) {
 			if (status) {
 				callback(true);
@@ -216,8 +211,8 @@ receptionistStatus: function (user, callback) {
 			}
 		});
 	},
-	deleteDoctor: function (username, callback) {
-		var sql = "delete from doctorinfo where username=?";
+	/*deleteDoctor: function (username, callback) {
+		var sql = "delete from users  where username=?";
 		db.execute(sql, [username], function (status) {
 			if (status) {
 				console.log(user);
@@ -226,5 +221,14 @@ receptionistStatus: function (user, callback) {
 				callback(false);
 			}
 		});
-	}
+	},
+	*/
+	delete: function(id, callback) {
+		var sql = "delete from user where id = '" + id + "'";
+        console.log(sql);
+
+        db.execute(sql, function(status) {
+            callback(status);
+        });
+    },
 }
