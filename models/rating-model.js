@@ -15,6 +15,12 @@ module.exports = {
         db.execute(sql, function(status) {
             callback(status);
         });
+    },
+    checkRating: function(id1, id2, callback) {
+        var sql = "select * from ratings where d_Id = '" + id1 + "' AND u_Id = '" + id2 + "'";
+        db.getResults(sql, function(results) {
+            callback(results);
+        });
     }
 
 }

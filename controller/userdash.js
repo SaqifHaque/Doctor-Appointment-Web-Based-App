@@ -1,7 +1,9 @@
 const express = require('express');
 const userModel = require.main.require('./models/crud-model');
-const ratingModel = require.main.require('./models/rating-model')
+const ratingModel = require.main.require('./models/rating-model');
+const ambulanceModel = require.main.require('./models/ambulance-model');
 const router = express.Router();
+const { check, validationResult } = require('express-validator');
 
 router.get('/', (req, res) => {
 
@@ -63,14 +65,45 @@ router.get('/appointment/:id', (req, res) => {
             })
         })
 })
-router.get('/navbar', (req, res) => {
+router.post('/appointment/:id', [
+    check('app_date', 'Invalid date')
+    .exists()
+    .isLength({ min: 1 }),
+    check('app_time', 'Invalid time')
+    .exists()
+    .isLength({ min: 1 }),
+    check('tran', 'Invalid transaction Id')
+    .exists()
+    .isLength({ min: 10 }),
+], (req, res) => {
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        console.log("validation failed");
+        const alert = errors.array();
+        alert.forEach(myFunction);
 
+        function myFunction(item) {
+            console.log(item);
+        }
+    } else {
+        res.redirect('../apptable');
+    }
+
+
+})
+router.get('/navbar', (req, res) => {
 
     res.render('shared/navbar');
 
 })
 router.get('/review/:id', (req, res) => {
-    res.render('user/review');
+    ratingModel.checkRating(req.params.id, req.cookies["Id"], function(results) {
+        if (results.length > 0) {
+            res.render('user/review', { msg: "Rated" });
+        } else {
+            res.render('user/review', { msg: "" });
+        }
+    })
 })
 
 router.post('/review/:id', (req, res) => {
@@ -81,16 +114,13 @@ router.post('/review/:id', (req, res) => {
         d_Id: req.params.id,
         u_Id: req.cookies["Id"]
     }
-
     ratingModel.insert(rating, function(status) {
         if (status) {
             res.redirect('/userdash');
         } else {
             console.log("Server Error");
         }
-
     })
-
 })
 router.get('/search/:str', (req, res) => {
 
@@ -100,6 +130,22 @@ router.get('/search/:str', (req, res) => {
         console.log(result);
         res.render('user/search', { Doctors: result });
     })
+
+})
+router.get('/ambulance', (req, res) => {
+
+    ambulanceModel.getAmbulance(function(results) {
+        console.log(results);
+        res.render('user/ambulance', { Ambulances: results });
+    })
+
+})
+router.get('/apptable', (req, res) => {
+
+    // ambulanceModel.getAmbulance(function(results) {
+    //     console.log(results);
+    res.render('user/apptable');
+    // })
 
 })
 
