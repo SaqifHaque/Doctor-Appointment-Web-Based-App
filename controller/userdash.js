@@ -4,6 +4,7 @@ const ratingModel = require.main.require('./models/rating-model');
 const ambulanceModel = require.main.require('./models/ambulance-model');
 const appointmentModel = require.main.require('./models/appointment-model');
 const noticeModel = require.main.require('./models/notice-model');
+const complainModel = require.main.require('./models/complain-model');
 const router = express.Router();
 const pdf = require('html-pdf');
 const options = { format: 'A4' };
@@ -48,6 +49,7 @@ router.get('/appointment/:id', (req, res) => {
             var schedule = str.split(",");
             let arr = [];
             let arr2 = [];
+            let arr3 = [];
             var d = new Date();
             var weekday = new Array(7);
             weekday[0] = "Sun";
@@ -122,13 +124,19 @@ router.post('/appointment/:id', [
                     transaction: req.body.tran,
                     status: "pending",
                 }
-                appointmentModel.insertInvoice(inv, function(status) {
-                    if (status) {
-                        res.redirect('../apptable');
-                    } else {
-                        console.log("invoice error");
-                    }
-                })
+                if (req.body.cash == "bkash") {
+                    appointmentModel.insertInvoice(inv, function(status) {
+                        if (status) {
+                            res.redirect('../apptable');
+                            console.log("bkash");
+                        } else {
+                            console.log("invoice error");
+                        }
+                    })
+                } else {
+                    console.log("cash");
+                    res.redirect('../apptable');
+                }
             } else {
                 console.log("error");
             }
@@ -267,5 +275,19 @@ router.post('/picupload', (req, res) => {
 
     });
 });
+router.get('/complain', (req, res) => {
+    var msg = "";
+
+    res.render('user/complain', { msg: msg });
+
+})
+router.post('/complain', (req, res) => {
+    complainModel.complainInsert(function(status) {
+        if (status) {
+            res.render('user/userdash');
+        }
+    })
+
+})
 
 module.exports = router;
