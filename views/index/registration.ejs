@@ -124,6 +124,11 @@
     <script src="assets/Index/js/global.js"></script>
     <script src="assets/Index/js/toastr.min.js"></script>
     <script>
+        let check = '<%= msg %>';
+
+        if (check != "") {
+            toastr["error"]("Email Already Exists")
+        }
         $('#button').on('click', function() {
             toastr.options = {
                 "closeButton": false,
@@ -150,7 +155,6 @@
             let pass = document.getElementById("pass").value;
             let confpass = document.getElementById("confpass").value;
             let bgroup = document.getElementById("bgroup").value;
-
             if (uname == "" || uname.length <= 3) {
                 toastr["error"]("Please,Provide Valid UserName")
             }

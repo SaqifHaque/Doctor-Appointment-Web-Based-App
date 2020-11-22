@@ -7,10 +7,10 @@ const { check, validationResult } = require('express-validator');
 
 const mg = mailgun({ apiKey: process.env.MAILGUN_APIKEY, domain: process.env.DOMAIN });
 var session = require('express-session');
+var msg = "";
 
 router.get('/', (req, res) => {
-
-    res.render('index/registration');
+    res.render('index/registration', { msg: msg });
 })
 
 router.post('/', [
@@ -42,61 +42,68 @@ router.post('/', [
     .exists()
     .isLength({ min: 2 })
 ], (req, res) => {
+    userModel.getByEmail(req.body.email, function(result) {
 
-    const errors = validationResult(req)
-    if (!errors.isEmpty()) {
-        console.log("validation failed");
-        const alert = errors.array();
-        alert.forEach(myFunction);
+        if (result.length > 0) {
+            msg = "exists";
+            res.render('index/registration', { msg: msg });
+        } else {
+            const errors = validationResult(req)
+            if (!errors.isEmpty()) {
+                console.log("validation failed");
+                const alert = errors.array();
+                alert.forEach(myFunction);
 
-        function myFunction(item) {
-            console.log(item);
-        }
-        // const alert = errors.array();
-        // res.rtender('index/registration', {
-        //     alert
-        // })
-        // console.log("validation failed");
-    } else {
-        console.log("Validation ok")
-        const pincode = Math.floor(1000 + Math.random() * 9000).toString();
-        res.cookie('pin', pincode);
-        res.cookie('verification', req.body.email);
-        console.log(pincode);
-        res.redirect('/pincode');
-        var user = {
-            username: req.body.username,
-            email: req.body.email,
-            bloodgroup: req.body.bloodgroup,
-            phone: req.body.phone,
-            password: req.body.password,
-            profilepic: "...",
-            type: "Patient",
-            status: "unverified",
-            gender: req.body.gender
-        };
-
-        userModel.insert(user, function(status) {
-            if (status) {
+                function myFunction(item) {
+                    console.log(item);
+                }
+                // const alert = errors.array();
+                // res.rtender('index/registration', {
+                //     alert
+                // })
+                // console.log("validation failed");
+            } else {
+                console.log("Validation ok")
                 const pincode = Math.floor(1000 + Math.random() * 9000).toString();
                 res.cookie('pin', pincode);
-                console.log(pincode);
-                // const data = {
-                //     from: 'no-reply@BetterCallDoc.com',
-                //     to: user.email,
-                //     subject: 'Email Verfication',
-                //     text: 'Your Pincode is - ' + pincode
-                // };
-                // mg.messages().send(data, function(error, body) {
-                //     console.log(body);
-                // });
-                console.log("success");
-                res.redirect('/pincode');
-            } else {
-                console.log("server failure");
+                res.cookie('verification', req.body.email);
+                var user = {
+                    username: req.body.username,
+                    email: req.body.email,
+                    bloodgroup: req.body.bloodgroup,
+                    phone: req.body.phone,
+                    password: req.body.password,
+                    profilepic: "...",
+                    type: "Patient",
+                    status: "unverified",
+                    gender: req.body.gender
+                };
+                msg = "";
+
+                userModel.insert(user, function(status) {
+                    if (status) {
+                        const pincode = Math.floor(1000 + Math.random() * 9000).toString();
+                        res.cookie('pin', pincode);
+                        console.log(pincode);
+                        // const data = {
+                        //     from: 'no-reply@BetterCallDoc.com',
+                        //     to: user.email,
+                        //     subject: 'Email Verfication',
+                        //     text: 'Your Pincode is - ' + pincode
+                        // };
+                        // mg.messages().send(data, function(error, body) {
+                        //     console.log(body);
+                        // });
+                        console.log("success");
+                        res.redirect('/pincode');
+                    } else {
+                        console.log("server failure");
+                    }
+                });
             }
-        });
-    }
+        }
+    })
 })
+
 
 module.exports = router;
