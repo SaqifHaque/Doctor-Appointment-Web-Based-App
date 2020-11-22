@@ -7,6 +7,7 @@ const registration = require('./controller/registration');
 const login = require('./controller/login');
 const pincode = require('./controller/pincode');
 const userdash = require('./controller/userdash');
+const download = require('./controller/download');
 const app = express();
 const toastr = require('express-toastr');
 const fileUpload = require('express-fileupload');
@@ -30,6 +31,7 @@ app.use('/registration', registration);
 app.use('/login', login);
 app.use('/pincode', pincode);
 app.use('/userdash', userdash);
+app.use('/download', download);
 
 //route
 app.get('/', (req, res) => {

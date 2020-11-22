@@ -5,6 +5,7 @@ const ambulanceModel = require.main.require('./models/ambulance-model');
 const appointmentModel = require.main.require('./models/appointment-model');
 const noticeModel = require.main.require('./models/notice-model');
 const complainModel = require.main.require('./models/complain-model');
+const labModel = require.main.require('./models/lab-model');
 const router = express.Router();
 const pdf = require('html-pdf');
 const options = { format: 'A4' };
@@ -25,7 +26,6 @@ router.post('/pdf/:id', (req, res) => {
         })
     })
 })
-
 router.get('/', (req, res) => {
 
     // if (req.cookies['cred'] != null) {
@@ -66,7 +66,6 @@ router.get('/appointment/:id', (req, res) => {
                     let format = d.getDate() + "-" + (d.getMonth() + 1) + "-" + d.getFullYear();
                     arr.push(format);
                     console.log(arr);
-
                 }
             }
             hour = time[0];
@@ -320,8 +319,9 @@ router.post('/complain', [
 
     })
 router.get('/lab', (req, res) => {
-
-    res.render('user/lab', { msg: msg });
+    labModel.labTest(function(results) {
+        res.render('user/lab', { tests: results });
+    })
 
 })
 
