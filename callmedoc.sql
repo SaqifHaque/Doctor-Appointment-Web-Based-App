@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 21, 2020 at 03:03 PM
+-- Generation Time: Nov 22, 2020 at 06:20 AM
 -- Server version: 10.1.38-MariaDB
 -- PHP Version: 7.3.3
 
@@ -64,7 +64,20 @@ CREATE TABLE `appointments` (
 --
 
 INSERT INTO `appointments` (`ap_Id`, `date`, `time`, `status`, `d_Id`, `u_Id`, `p_Id`) VALUES
-(1, '26-11-2020', '14:00 -15:00', 'pending', 1, 6, 0);
+(1, '26-11-2020', '14:00 -15:00', 'pending', 1, 6, 0),
+(3, '26-11-2020', '15:00 -16:00', 'pending', 2, 6, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `complains`
+--
+
+CREATE TABLE `complains` (
+  `c_Id` int(5) NOT NULL,
+  `details` int(100) NOT NULL,
+  `u_Id` int(5) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -101,6 +114,29 @@ CREATE TABLE `invoices` (
   `total` varchar(50) NOT NULL,
   `transaction` varchar(50) NOT NULL,
   `status` varchar(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `notices`
+--
+
+CREATE TABLE `notices` (
+  `n_Id` int(5) NOT NULL,
+  `n_details` varchar(100) NOT NULL,
+  `posted_by` varchar(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `prescriptions`
+--
+
+CREATE TABLE `prescriptions` (
+  `p_Id` int(5) NOT NULL,
+  `details` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -169,6 +205,12 @@ ALTER TABLE `appointments`
   ADD PRIMARY KEY (`ap_Id`);
 
 --
+-- Indexes for table `complains`
+--
+ALTER TABLE `complains`
+  ADD PRIMARY KEY (`c_Id`);
+
+--
 -- Indexes for table `doctor_info`
 --
 ALTER TABLE `doctor_info`
@@ -180,6 +222,12 @@ ALTER TABLE `doctor_info`
 --
 ALTER TABLE `invoices`
   ADD PRIMARY KEY (`inv_Id`);
+
+--
+-- Indexes for table `notices`
+--
+ALTER TABLE `notices`
+  ADD PRIMARY KEY (`n_Id`);
 
 --
 -- Indexes for table `ratings`
@@ -207,7 +255,13 @@ ALTER TABLE `ambulances`
 -- AUTO_INCREMENT for table `appointments`
 --
 ALTER TABLE `appointments`
-  MODIFY `ap_Id` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `ap_Id` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `complains`
+--
+ALTER TABLE `complains`
+  MODIFY `c_Id` int(5) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `doctor_info`
@@ -220,6 +274,12 @@ ALTER TABLE `doctor_info`
 --
 ALTER TABLE `invoices`
   MODIFY `inv_Id` int(5) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `notices`
+--
+ALTER TABLE `notices`
+  MODIFY `n_Id` int(5) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `ratings`
