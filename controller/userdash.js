@@ -199,12 +199,50 @@ router.get('/apptable', (req, res) => {
 
 })
 router.get('/myprofile', (req, res) => {
+    userModel.getById(req.cookies["Id"], function(result) {
+        res.render('user/myprofile', { user: result });
+    })
 
-    res.render('user/myprofile');
+})
+router.post('/myprofile', (req, res) => {
+    var user = {
+        username: req.body.username,
+        password: req.body.password,
+        id: req.cookies["Id"]
+    }
+    console.log(user);
+    userModel.myProfileUpdate(user, function(status) {
+        if (status) {
+            res.redirect('myprofile');
+        }
+    })
 
 })
 router.get('/membership', (req, res) => {
     res.render('user/membership')
 })
+router.post('/picupload', (req, res) => {
+
+    let fileName = req.files.dp;
+    let uploadPath = 'assets/uploads/' + fileName.name;
+    var user = {
+        userid: req.cookies["Id"],
+        uploadPath: uploadPath
+    };
+    userModel.uploadPicture(user, function(status) {
+        if (status) {
+            fileName.mv(uploadPath, (err) => {
+                if (err) {
+                    return res.status(500).send(err);
+                }
+
+            });
+            res.redirect('myprofile');
+        } else {
+            console.log("can not upload");
+        }
+
+    });
+});
 
 module.exports = router;

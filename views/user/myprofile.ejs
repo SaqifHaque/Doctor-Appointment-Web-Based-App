@@ -26,55 +26,51 @@
 
     <div class="p-4">
         <div class="md:flex">
-            <div class="md:flex-shrink-0">
-                <div class="py-3 center mx-auto">
-                    <div class="bg-white px-4 py-5 rounded-lg shadow-lg text-center w-60">
-                        <div class="mb-4">
-                            <img class="w-auto mx-auto rounded-full object-cover object-center" src="https://i1.pngguru.com/preview/137/834/449/cartoon-cartoon-character-avatar-drawing-film-ecommerce-facial-expression-png-clipart.jpg" alt="Avatar Upload" />
-                        </div>
-                        <label class="cursor-pointer mt-6">
+            <form action="picupload" method="POST" enctype="multipart/form-data">
+                <div class="md:flex-shrink-0">
+                    <div class="py-3 center mx-auto">
+                        <div class="bg-white px-4 py-5 rounded-lg shadow-lg text-center w-60">
+                            <div class="mb-4">
+                                <img class="w-auto mx-auto rounded-full object-cover object-center" src="../../<%= user[0].profilepic %>" alt="Avatar Upload" />
+                            </div>
+                            <label class="cursor-pointer mt-6">
                         <span class="mt-2 text-base leading-normal px-4 py-2 bg-blue-500 text-white text-sm rounded-full" >Upload Photo</span>
-                        <input type='file' class="hidden" :multiple="multiple" :accept="accept" />
+                        <input type='file' class="hidden" name="dp"/>
                       </label>
+                        </div>
+                    </div>
+                    <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">
+                    Update Profile Picture
+                  </button>
+                </div>
+            </form>
+            <form method="POST">
+                <div class="mx-8 space-y-6">
+                    <div>
+                        <label for="username" class="text-indigo-600 font-bold">User Name:</label>
+                        <input id="username" name="username" value="<%= user[0].username %>" type="text" class=" w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm">
+                    </div>
+                    <div>
+                        <label for="email" class="text-indigo-600 font-bold">Email:</label>
+                        <input id="email-address" value="<%= user[0].email %>" name="email" type="email" disabled class=" w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm">
+                    </div>
+                    <div>
+                        <label for="bg" class="text-indigo-600 font-bold">Blood Group:</label>
+                        <input id="bg" value="<%= user[0].bloodgroup %>" name="bg" type="text" disabled class=" w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm">
+                    </div>
+                    <div>
+                        <label for="phone" class="text-indigo-600 font-bold">Phone Number:</label>
+                        <input id="phone" value="<%= user[0].phonenumber %>" name="phone" type="text" disabled class=" w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm">
+                    </div>
+                    <div>
+                        <label for="password" class="text-indigo-600 font-bold">Password:</label>
+                        <input id="password" value="<%= user[0].password %>" name="password" type="text" class=" w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm">
+                    </div>
+                    <div class="flex flex-row-reverse">
+                        <button class="bg-indigo-500 py-2 px-5 text-white rounded-sm">Edit</button>
                     </div>
                 </div>
-            </div>
-
-            <div class="mx-8 space-y-6">
-                <div>
-                    <label for="id" class="text-indigo-600 font-bold">ID:</label>
-                    <input id="email-address" name="email" type="email" class=" w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm">
-                </div>
-                <div>
-                    <label for="id" class="text-indigo-600 font-bold">User Name:</label>
-                    <input id="email-address" name="email" type="email" class=" w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm">
-                </div>
-                <div>
-                    <label for="id" class="text-indigo-600 font-bold">Email:</label>
-                    <input id="email-address" name="email" type="email" class=" w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm">
-                </div>
-                <div>
-                    <label for="id" class="text-indigo-600 font-bold">Blood Group:</label>
-                    <input id="email-address" name="email" type="email" class=" w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm">
-                </div>
-                <div>
-                    <label for="id" class="text-indigo-600 font-bold">Phone Number:</label>
-                    <input id="email-address" name="email" type="email" class=" w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm">
-                </div>
-                <div>
-                    <label for="id" class="text-indigo-600 font-bold">Type:</label>
-                    <input id="email-address" name="email" type="email" class=" w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm">
-                </div>
-                <div>
-                    <label for="id" class="text-indigo-600 font-bold">Status:</label>
-                    <input id="email-address" name="email" type="email" class=" w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm">
-                </div>
-                <div class="flex flex-row-reverse">
-                    <button class="bg-indigo-500 py-2 px-5 text-white rounded-sm">Edit</button>
-                </div>
-            </div>
-
-
+            </form>
         </div>
     </div>
 

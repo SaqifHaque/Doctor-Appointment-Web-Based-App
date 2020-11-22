@@ -9,6 +9,7 @@ const pincode = require('./controller/pincode');
 const userdash = require('./controller/userdash');
 const app = express();
 const toastr = require('express-toastr');
+const fileUpload = require('express-fileupload');
 require('dotenv').config();
 
 //config
@@ -19,6 +20,10 @@ app.use('/assets', express.static('assets'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(exSession({ secret: 'my secret value', saveUninitialized: true, resave: false }));
 app.use(cookieParser());
+app.use(fileUpload({
+    useTempFiles: true,
+    tempFileDir: '/tmp/'
+}));
 app.use(toastr());
 
 app.use('/registration', registration);

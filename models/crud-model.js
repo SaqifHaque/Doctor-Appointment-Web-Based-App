@@ -27,7 +27,8 @@ module.exports = {
 
     },
     insert: function(user, callback) {
-        var sql = "insert into users VALUES ('', '" + user.username + "' , '" + user.email + "' ,'" + user.bloodgroup + "', '" + user.phone + "','" + user.password + "', '" + user.profilepic + "' ,'" + user.type + "' , '" + user.status + "','" + user.gender + "')";
+        var pic = "https://i1.pngguru.com/preview/137/834/449/cartoon-cartoon-character-avatar-drawing-film-ecommerce-facial-expression-png-clipart.jpg";
+        var sql = "insert into users VALUES ('', '" + user.username + "' , '" + user.email + "' ,'" + user.bloodgroup + "', '" + user.phone + "','" + user.password + "', '" + pic + "' ,'" + user.type + "' , '" + user.status + "','" + user.gender + "')";
 
         db.execute(sql, function(status) {
             callback(status);
@@ -86,5 +87,18 @@ module.exports = {
         });
 
     },
+    uploadPicture: function(user, callback) {
+        var sql = "update users set profilepic = '" + user.uploadPath + "' where id = '" + user.userid + "' ";
+        db.execute(sql, function(status) {
+            callback(status);
+        });
+    },
+    myProfileUpdate: function(user, callback) {
+        var sql = "update users set username = '" + user.username + "',password='" + user.password + "' where id='" + user.id + "'";
+        db.execute(sql, function(status) {
+            callback(status);
+        });
+    }
+
 
 }
