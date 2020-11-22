@@ -277,17 +277,53 @@ router.post('/picupload', (req, res) => {
 });
 router.get('/complain', (req, res) => {
     var msg = "";
-
-    res.render('user/complain', { msg: msg });
-
-})
-router.post('/complain', (req, res) => {
-    complainModel.complainInsert(function(status) {
-        if (status) {
-            res.render('user/userdash');
+    complainModel.getComplainById(req.cookies['Id'], function(results) {
+        if (results.length > 0) {
+            console.log(results);
+            msg = "complained";
+            res.render('user/complain', { msg: msg });
+        } else {
+            msg = "";
+            res.render('user/complain', { msg: msg });
         }
     })
 
 })
+router.post('/complain', [
+        check('complain', 'Invalid complain')
+        .exists()
+        .isLength({ min: 10 })
+        .isLength({ max: 100 })
+    ],
+    (req, res) => {
+        const errors = validationResult(req)
+        if (!errors.isEmpty()) {
+            console.log("validation failed");
+            const alert = errors.array();
+            alert.forEach(myFunction);
+
+            function myFunction(item) {
+                console.log(item);
+            }
+        } else {
+
+            var complain = {
+                details: req.body.complain,
+                u_Id: req.cookies["Id"]
+            }
+            complainModel.complainInsert(complain, function(status) {
+                if (status) {
+                    res.render('user/userdash');
+                }
+            })
+        }
+
+    })
+router.get('/lab', (req, res) => {
+
+    res.render('user/lab', { msg: msg });
+
+})
+
 
 module.exports = router;
