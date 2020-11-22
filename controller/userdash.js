@@ -3,6 +3,7 @@ const userModel = require.main.require('./models/crud-model');
 const ratingModel = require.main.require('./models/rating-model');
 const ambulanceModel = require.main.require('./models/ambulance-model');
 const appointmentModel = require.main.require('./models/appointment-model');
+const noticeModel = require.main.require('./models/notice-model');
 const router = express.Router();
 const { check, validationResult } = require('express-validator');
 
@@ -121,6 +122,13 @@ router.post('/appointment/:id', [
 router.get('/navbar', (req, res) => {
 
     res.render('shared/navbar');
+
+})
+router.get('/notice', (req, res) => {
+
+    noticeModel.getNotice(function(results) {
+        res.send(JSON.stringify(results));
+    })
 
 })
 router.get('/review/:id', (req, res) => {
