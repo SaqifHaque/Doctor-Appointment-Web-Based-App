@@ -13,6 +13,7 @@
         "express-session": "^1.17.1",
         "express-toastr": "^2.0.2",
         "express-validator": "^6.6.1",
+        "html-pdf": "^2.2.0",
         "mailgun-js": "^0.22.0",
         "mysql2": "^2.2.5",
         "nodemon": "^2.0.6"

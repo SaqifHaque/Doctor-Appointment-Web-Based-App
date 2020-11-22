@@ -22,5 +22,11 @@ module.exports = {
         db.getResults(sql, function(results) {
             callback(results);
         });
+    },
+    getPrescriptionById: function(id, callback) {
+        var sql = "select * from prescriptions where p_Id = '" + id + "'";
+        db.getResults(sql, function(results) {
+            callback(results);
+        });
     }
 }

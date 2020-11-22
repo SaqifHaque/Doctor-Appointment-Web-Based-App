@@ -203,5 +203,8 @@ router.get('/myprofile', (req, res) => {
     res.render('user/myprofile');
 
 })
+router.get('/membership', (req, res) => {
+    res.render('user/membership')
+})
 
 module.exports = router;
