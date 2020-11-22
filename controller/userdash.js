@@ -5,7 +5,25 @@ const ambulanceModel = require.main.require('./models/ambulance-model');
 const appointmentModel = require.main.require('./models/appointment-model');
 const noticeModel = require.main.require('./models/notice-model');
 const router = express.Router();
+const pdf = require('html-pdf');
+const options = { format: 'A4' };
+const fs = require('fs');
 const { check, validationResult } = require('express-validator');
+
+router.post('/pdf/:id', (req, res) => {
+    appointmentModel.getPrescriptionById(req.params.id, function(result) {
+        res.render('pdf/demopdf', { data: result }, function(err, html) {
+            pdf.create(html, options).toFile('./assets/Uploads/prescription.pdf', function(err, out) {
+                if (err) return console.log(err);
+                else {
+                    var datafile = fs.readFileSync('./assets/Uploads/prescription.pdf');
+                    res.header('content-type', 'application/pdf');
+                    res.send(datafile);
+                }
+            })
+        })
+    })
+})
 
 router.get('/', (req, res) => {
 
@@ -181,18 +199,17 @@ router.get('/apptable', (req, res) => {
         if (results.length > 0) {
             var c = [];
             for (var i = 0; i < results.length; i++) {
-                var date = results[i].date;
-                var time = results[i].time;
-                var status = results[i].status;
+                var app = results;
                 var doc = {};
                 var j = 0;
 
                 userModel.getDoctorById(results[i].d_Id, function(result) {
                     doc = {
                         name: result[0].username,
-                        date: date,
-                        time: time,
-                        status: status,
+                        date: app[j].date,
+                        time: app[j].time,
+                        status: app[j].status,
+                        p_Id: app[j].p_Id
                     }
                     c.push(doc);
                     if (j == results.length - 1) {
@@ -201,10 +218,8 @@ router.get('/apptable', (req, res) => {
                     j++;
                 })
             }
-
         }
     })
-
 })
 router.get('/myprofile', (req, res) => {
     userModel.getById(req.cookies["Id"], function(result) {
