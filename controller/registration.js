@@ -75,7 +75,7 @@ router.post('/', [
                     password: req.body.password,
                     profilepic: "...",
                     type: "Patient",
-                    status: "unverified",
+                    status: "Unverified",
                     gender: req.body.gender
                 };
                 msg = "";

@@ -6,6 +6,7 @@ const appointmentModel = require.main.require('./models/appointment-model');
 const noticeModel = require.main.require('./models/notice-model');
 const complainModel = require.main.require('./models/complain-model');
 const labModel = require.main.require('./models/lab-model');
+const membershipModel = require.main.require('./models/membership-model');
 const router = express.Router();
 const pdf = require('html-pdf');
 const options = { format: 'A4' };
@@ -324,6 +325,70 @@ router.get('/lab', (req, res) => {
     })
 
 })
+router.get('/financial', (req, res) => {
+    res.render('user/financial');
+
+
+})
+router.post('/financial', [
+        check('financial', 'Invalid complain')
+        .exists()
+        .isLength({ min: 10 })
+        .isLength({ max: 100 })
+    ],
+    (req, res) => {
+        const errors = validationResult(req)
+        if (!errors.isEmpty()) {
+            console.log("validation failed");
+            const alert = errors.array();
+            alert.forEach(myFunction);
+
+            function myFunction(item) {
+                console.log(item);
+            }
+        } else {
+            membershipModel.financeUpdate(req.cookies["Id"], function(status) {
+                if (status) {
+                    res.render('user/userdash');
+                }
+
+            })
+
+
+        }
+    })
+router.get('/premium', (req, res) => {
+    res.render('user/premium');
+
+
+})
+router.post('/premium', [
+        check('tran', 'Invalid tran')
+        .exists()
+        .isLength({ min: 10 })
+    ],
+    (req, res) => {
+        const errors = validationResult(req)
+        if (!errors.isEmpty()) {
+            console.log("validation failed");
+            const alert = errors.array();
+            alert.forEach(myFunction);
+
+            function myFunction(item) {
+                console.log(item);
+            }
+        } else {
+            membershipModel.premiumUpdate(req.cookies["Id"], function(status) {
+                if (status) {
+                    res.render('user/userdash');
+                }
+
+            })
+
+
+        }
+    })
+
 
 
 module.exports = router;
