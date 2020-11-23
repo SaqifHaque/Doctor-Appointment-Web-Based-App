@@ -10,7 +10,11 @@ var session = require('express-session');
 var msg = "";
 
 router.get('/', (req, res) => {
-    res.render('index/registration', { msg: msg });
+    if (req.cookies["cred"] != null) {
+        res.redirect("/userdash");
+    } else {
+        res.render('index/registration', { msg: msg });
+    }
 })
 
 router.post('/', [

@@ -12,24 +12,21 @@ const pdf = require('html-pdf');
 const options = { format: 'A4' };
 const fs = require('fs');
 const { check, validationResult } = require('express-validator');
+var msg = "";
 
 router.post('/pdf/:id', (req, res) => {
-    if (req.cookies["cred"] != null && req.cookies["type"] == "Patient") {
-        appointmentModel.getPrescriptionById(req.params.id, function(result) {
-            res.render('pdf/demopdf', { data: result }, function(err, html) {
-                pdf.create(html, options).toFile('./assets/Uploads/prescription.pdf', function(err, out) {
-                    if (err) return console.log(err);
-                    else {
-                        var datafile = fs.readFileSync('./assets/Uploads/prescription.pdf');
-                        res.header('content-type', 'application/pdf');
-                        res.send(datafile);
-                    }
-                })
+    appointmentModel.getPrescriptionById(req.params.id, function(result) {
+        res.render('pdf/demopdf', { data: result }, function(err, html) {
+            pdf.create(html, options).toFile('./assets/Uploads/prescription.pdf', function(err, out) {
+                if (err) return console.log(err);
+                else {
+                    var datafile = fs.readFileSync('./assets/Uploads/prescription.pdf');
+                    res.header('content-type', 'application/pdf');
+                    res.send(datafile);
+                }
             })
         })
-    } else {
-        res.render('user/login');
-    }
+    })
 })
 router.get('/', (req, res) => {
     if (req.cookies["cred"] != null && req.cookies["type"] == "Patient") {
@@ -38,7 +35,7 @@ router.get('/', (req, res) => {
         })
     } else {
 
-        res.render('user/login');
+        res.redirect('/login');
     }
 })
 
@@ -86,12 +83,12 @@ router.get('/appointment/:id', (req, res) => {
                         rating += reviews[j].rating;
                     }
                     rating = rating / reviews.length;
-                    res.render('user/appointment', { Doctor: results, date: arr, time: arr2, reviews: reviews, avg: rating })
+                    res.render('user/appointment', { Doctor: results, date: arr, time: arr2, reviews: reviews, avg: rating, type: req.cookies["status"] })
                 })
             })
     } else {
 
-        res.render('user/login');
+        res.redirect('/login');
     }
 })
 router.post('/appointment/:id', [
@@ -154,14 +151,14 @@ router.post('/appointment/:id', [
         }
 
     } else {
-        res.render("user/login");
+        res.redirect('/login');
     }
 })
 router.get('/navbar', (req, res) => {
     if (req.cookies["cred"] != null && req.cookies["type"] == "Patient") {
         res.render('shared/navbar');
     } else {
-        res.render("user/login");
+        res.redirect('/login');
     }
 
 })
@@ -171,7 +168,7 @@ router.get('/notice', (req, res) => {
             res.send(JSON.stringify(results));
         })
     } else {
-        res.render("user/login");
+        res.redirect('/login');
     }
 
 })
@@ -185,7 +182,7 @@ router.get('/review/:id', (req, res) => {
             }
         })
     } else {
-        res.render("user/login");
+        res.redirect('/login');
     }
 })
 
@@ -205,7 +202,7 @@ router.post('/review/:id', (req, res) => {
             }
         })
     } else {
-        res.render("user/login");
+        res.redirect('/login');
     }
 })
 router.get('/search/:str', (req, res) => {
@@ -217,7 +214,7 @@ router.get('/search/:str', (req, res) => {
             res.render('user/search', { Doctors: result });
         })
     } else {
-        res.render("user/login");
+        res.redirect('/login');
     }
 
 })
@@ -228,7 +225,7 @@ router.get('/ambulance', (req, res) => {
             res.render('user/ambulance', { Ambulances: results });
         })
     } else {
-        res.render("user/login");
+        res.redirect('/login');
     }
 
 })
@@ -260,7 +257,7 @@ router.get('/apptable', (req, res) => {
             }
         })
     } else {
-        res.render("user/login");
+        res.redirect('/login');
     }
 })
 router.get('/myprofile', (req, res) => {
@@ -269,25 +266,40 @@ router.get('/myprofile', (req, res) => {
             res.render('user/myprofile', { user: result });
         })
     } else {
-        res.render("user/login");
+        res.redirect('/login');
     }
 
 })
-router.post('/myprofile', (req, res) => {
+router.post('/myprofile', [
+    check('username', 'Invalid UserName').exists().isLength({ min: 3 }),
+    check('password', 'Invalid Password').exists().isLength({ min: 3 })
+
+], (req, res) => {
     if (req.cookies["cred"] != null && req.cookies["type"] == "Patient") {
-        var user = {
-            username: req.body.username,
-            password: req.body.password,
-            id: req.cookies["Id"]
-        }
-        console.log(user);
-        userModel.myProfileUpdate(user, function(status) {
-            if (status) {
-                res.redirect('myprofile');
+        const errors = validationResult(req)
+        if (!errors.isEmpty()) {
+            console.log("validation failed");
+            const alert = errors.array();
+            alert.forEach(myFunction);
+
+            function myFunction(item) {
+                console.log(item);
             }
-        })
+        } else {
+            var user = {
+                username: req.body.username,
+                password: req.body.password,
+                id: req.cookies["Id"]
+            }
+            console.log(user);
+            userModel.myProfileUpdate(user, function(status) {
+                if (status) {
+                    res.redirect('myprofile');
+                }
+            })
+        }
     } else {
-        res.render("user/login");
+        res.redirect('/login');
     }
 
 })
@@ -295,34 +307,52 @@ router.get('/membership', (req, res) => {
     if (req.cookies["cred"] != null && req.cookies["type"] == "Patient") {
         res.render('user/membership')
     } else {
-        res.render("user/login");
+        res.redirect('/login');
     }
 })
-router.post('/picupload', (req, res) => {
+router.post('/picupload', [
+    check('dp', 'Invalid Profile Pic').custom((val, { req }) => {
+        if (req.files.dp.mimetype === 'image/jpeg') {
+            return true;
+        } else {
+            return false;
+        }
+    })
+], (req, res) => {
     if (req.cookies["cred"] != null && req.cookies["type"] == "Patient") {
+        const errors = validationResult(req)
+        if (!errors.isEmpty()) {
+            console.log("validation failed");
+            const alert = errors.array();
+            alert.forEach(myFunction);
 
-        let fileName = req.files.dp;
-        let uploadPath = 'assets/uploads/' + fileName.name;
-        var user = {
-            userid: req.cookies["Id"],
-            uploadPath: uploadPath
-        };
-        userModel.uploadPicture(user, function(status) {
-            if (status) {
-                fileName.mv(uploadPath, (err) => {
-                    if (err) {
-                        return res.status(500).send(err);
-                    }
-
-                });
-                res.redirect('myprofile');
-            } else {
-                console.log("can not upload");
+            function myFunction(item) {
+                console.log(item);
             }
+        } else {
 
-        });
+            let fileName = req.files.dp;
+            let uploadPath = 'assets/uploads/' + fileName.name;
+            var user = {
+                userid: req.cookies["Id"],
+                uploadPath: uploadPath
+            };
+            userModel.uploadPicture(user, function(status) {
+                if (status) {
+                    fileName.mv(uploadPath, (err) => {
+                        if (err) {
+                            return res.status(500).send(err);
+                        }
+
+                    });
+                    res.redirect('myprofile');
+                } else {
+                    console.log("can not upload");
+                }
+            });
+        }
     } else {
-        res.render("user/login");
+        res.redirect('/login');
     }
 });
 router.get('/complain', (req, res) => {
@@ -339,7 +369,7 @@ router.get('/complain', (req, res) => {
             }
         })
     } else {
-        res.render("user/login");
+        res.redirect('/login');
     }
 
 })
@@ -373,7 +403,7 @@ router.post('/complain', [
                 })
             }
         } else {
-            res.render("user/login");
+            res.redirect('/login');
         }
 
     })
@@ -383,7 +413,7 @@ router.get('/lab', (req, res) => {
             res.render('user/lab', { tests: results });
         })
     } else {
-        res.render("user/login");
+        res.redirect('/login');
     }
 
 })
@@ -391,7 +421,7 @@ router.get('/financial', (req, res) => {
     if (req.cookies["cred"] != null && req.cookies["type"] == "Patient") {
         res.render('user/financial');
     } else {
-        res.render("user/login");
+        res.redirect('/login');
     }
 
 
@@ -418,20 +448,17 @@ router.post('/financial', [
                     if (status) {
                         res.render('user/userdash');
                     }
-
                 })
-
-
             }
         } else {
-            res.render("user/login");
+            res.redirect('/login');
         }
     })
 router.get('/premium', (req, res) => {
     if (req.cookies["cred"] != null && req.cookies["type"] == "Patient") {
         res.render('user/premium');
     } else {
-        res.render("user/login");
+        res.redirect('/login');
     }
 
 
@@ -463,16 +490,16 @@ router.post('/premium', [
 
             }
         } else {
-            res.render("user/login");
+            res.redirect('/login');
         }
     })
 router.get('/invoice', (req, res) => {
     if (req.cookies["cred"] != null && req.cookies["type"] == "Patient") {
-        appointmentModel.getInvoice(function(results) {
+        appointmentModel.getInvoice(req.cookies["Id"], function(results) {
             res.render('user/invoice', { invoices: results });
         })
     } else {
-        res.render("user/login");
+        res.redirect('/login');
     }
 
 })

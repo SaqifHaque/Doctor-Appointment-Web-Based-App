@@ -9,7 +9,7 @@ router.get('/', (req, res) => {
     if (req.cookies['pin'] != null) {
         res.render('index/pincode', { otp: req.cookies['pin'] });
     } else {
-        res.render('index/registration');
+        res.redirect('/registration');
     }
 })
 

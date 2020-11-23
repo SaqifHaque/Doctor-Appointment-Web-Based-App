@@ -2,10 +2,14 @@ const express = require('express');
 const userModel = require.main.require('./models/crud-model');
 const router = express.Router();
 
-var msg = "";
+let msg = "";
 
 router.get('/', (req, res) => {
-    res.render('index/login', { msg: msg });
+    if (req.cookies["cred"] != null) {
+        res.redirect("/userdash");
+    } else {
+        res.render('index/login', { msg: msg });
+    }
 })
 
 router.post('/', (req, res) => {
@@ -23,14 +27,20 @@ router.post('/', (req, res) => {
                 res.cookie('uname', results[0].username);
                 res.cookie('type', results[0].type);
                 res.cookie('Id', results[0].id);
-                if (results[0].type == "Admin") {
-                    // res.redirect('/registration');
-                } else if (results[0].type == "Doctor") {
-                    //res.redirect('/registration');
-                } else if (results[0].type == "Patient") {
-                    res.redirect('/userdash');
-                } else if (results[0].type == "Receptionist") {
-                    //res.redirect('/registration');
+                res.cookie('status', results[0].status);
+                if (results[0].status == "Unverified") {
+                    if (results[0].type == "Admin") {
+                        // res.redirect('/registration');
+                    } else if (results[0].type == "Doctor") {
+                        //res.redirect('/registration');
+                    } else if (results[0].type == "Patient") {
+                        res.redirect('/userdash');
+                    } else if (results[0].type == "Receptionist") {
+                        //res.redirect('/registration');
+                    }
+                } else {
+                    msg = "Unauthorized";
+                    res.render('index/login', { msg: msg });
                 }
             })
         } else {
