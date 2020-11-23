@@ -89,15 +89,15 @@ router.post('/', [
                         const pincode = Math.floor(1000 + Math.random() * 9000).toString();
                         res.cookie('pin', pincode);
                         console.log(pincode);
-                        // const data = {
-                        //     from: 'no-reply@BetterCallDoc.com',
-                        //     to: user.email,
-                        //     subject: 'Email Verfication',
-                        //     text: 'Your Pincode is - ' + pincode
-                        // };
-                        // mg.messages().send(data, function(error, body) {
-                        //     console.log(body);
-                        // });
+                        const data = {
+                            from: 'no-reply@BetterCallDoc.com',
+                            to: user.email,
+                            subject: 'Email Verfication',
+                            text: 'Your Pincode is - ' + pincode
+                        };
+                        mg.messages().send(data, function(error, body) {
+                            console.log(body);
+                        });
                         console.log("success");
                         res.redirect('/pincode');
                     } else {

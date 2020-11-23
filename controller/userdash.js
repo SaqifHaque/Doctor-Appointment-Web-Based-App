@@ -191,7 +191,7 @@ router.post('/appointment/:id', [
 })
 router.get('/navbar', (req, res) => {
     if (req.cookies["cred"] != null && req.cookies["type"] == "Patient") {
-        res.render('shared/navbar');
+        res.render('shared/navbar', { name: req.cookies["uname"] });
     } else {
         res.redirect('/login');
     }
@@ -280,8 +280,10 @@ router.get('/apptable', (req, res) => {
                             date: app[j].date,
                             time: app[j].time,
                             status: app[j].status,
-                            p_Id: app[j].p_Id
+                            p_Id: app[j].p_Id,
+                            d_Id: result[0].d_Id
                         }
+                        console.log(doc.d_Id);
                         c.push(doc);
                         if (j == results.length - 1) {
                             res.render('user/apptable', { app: c });
