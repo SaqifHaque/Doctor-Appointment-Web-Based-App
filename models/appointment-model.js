@@ -10,7 +10,7 @@ module.exports = {
         });
     },
     insertInvoice: function(inv, callback) {
-        var sql = "insert into invoices VALUES ('', '" + inv.total + "','" + inv.transaction + "''" + inv.status + "')";
+        var sql = "insert into invoices VALUES ('', '" + inv.total + "','" + inv.transaction + "','" + inv.date + "','" + inv.status + "','" + inv.u_Id + "')";
 
         db.execute(sql, function(status) {
             callback(status);
@@ -28,5 +28,12 @@ module.exports = {
         db.getResults(sql, function(results) {
             callback(results);
         });
-    }
+    },
+    getInvoice: function(id, callback) {
+        var sql = "select * from invoices where u_Id = '" + id + "'";
+        db.getResults(sql, function(results) {
+            callback(results);
+        });
+    },
+
 }

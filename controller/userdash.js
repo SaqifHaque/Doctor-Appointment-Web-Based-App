@@ -14,78 +14,85 @@ const fs = require('fs');
 const { check, validationResult } = require('express-validator');
 
 router.post('/pdf/:id', (req, res) => {
-    appointmentModel.getPrescriptionById(req.params.id, function(result) {
-        res.render('pdf/demopdf', { data: result }, function(err, html) {
-            pdf.create(html, options).toFile('./assets/Uploads/prescription.pdf', function(err, out) {
-                if (err) return console.log(err);
-                else {
-                    var datafile = fs.readFileSync('./assets/Uploads/prescription.pdf');
-                    res.header('content-type', 'application/pdf');
-                    res.send(datafile);
-                }
+    if (req.cookies["cred"] != null && req.cookies["type"] == "Patient") {
+        appointmentModel.getPrescriptionById(req.params.id, function(result) {
+            res.render('pdf/demopdf', { data: result }, function(err, html) {
+                pdf.create(html, options).toFile('./assets/Uploads/prescription.pdf', function(err, out) {
+                    if (err) return console.log(err);
+                    else {
+                        var datafile = fs.readFileSync('./assets/Uploads/prescription.pdf');
+                        res.header('content-type', 'application/pdf');
+                        res.send(datafile);
+                    }
+                })
             })
         })
-    })
+    } else {
+        res.render('user/login');
+    }
 })
 router.get('/', (req, res) => {
-
-    // if (req.cookies['cred'] != null) {
-    userModel.getDoctors(function(results) {
+    if (req.cookies["cred"] != null && req.cookies["type"] == "Patient") {
+        userModel.getDoctors(function(results) {
             res.render('user/userdash', { Doctors: results });
         })
-        // } else {
+    } else {
 
-    //     res.render('index/login');
-    // }
+        res.render('user/login');
+    }
 })
 
 router.get('/appointment/:id', (req, res) => {
-
-    userModel.getDoctorById(req.params.id,
-        function(results) {
-            //var str = results[0].avaibality;
-            var str = "Thu,Sat";
-            var str2 = "14-18";
-            var time = str2.split("-");
-            var schedule = str.split(",");
-            let arr = [];
-            let arr2 = [];
-            let arr3 = [];
-            var d = new Date();
-            var weekday = new Array(7);
-            weekday[0] = "Sun";
-            weekday[1] = "Mon";
-            weekday[2] = "Tue";
-            weekday[3] = "Wed";
-            weekday[4] = "Thu";
-            weekday[5] = "Fri";
-            weekday[6] = "Sat";
-            for (var i = 0; i < 10; i++) {
-                d.setDate(d.getDate() + 1)
-                var n = weekday[d.getDay()];
-                if (schedule.includes(n)) {
-                    let format = d.getDate() + "-" + (d.getMonth() + 1) + "-" + d.getFullYear();
-                    arr.push(format);
-                    console.log(arr);
+    if (req.cookies["cred"] != null && req.cookies["type"] == "Patient") {
+        userModel.getDoctorById(req.params.id,
+            function(results) {
+                //var str = results[0].avaibality;
+                var str = "Thu,Sat";
+                var str2 = "14-18";
+                var time = str2.split("-");
+                var schedule = str.split(",");
+                let arr = [];
+                let arr2 = [];
+                let arr3 = [];
+                var d = new Date();
+                var weekday = new Array(7);
+                weekday[0] = "Sun";
+                weekday[1] = "Mon";
+                weekday[2] = "Tue";
+                weekday[3] = "Wed";
+                weekday[4] = "Thu";
+                weekday[5] = "Fri";
+                weekday[6] = "Sat";
+                for (var i = 0; i < 10; i++) {
+                    d.setDate(d.getDate() + 1)
+                    var n = weekday[d.getDay()];
+                    if (schedule.includes(n)) {
+                        let format = d.getDate() + "-" + (d.getMonth() + 1) + "-" + d.getFullYear();
+                        arr.push(format);
+                        console.log(arr);
+                    }
                 }
-            }
-            hour = time[0];
-            while (time[1] != hour) {
-                var timeformat = hour + ":00 -" + (parseInt(hour) + 1).toString() + ":00";
-                console.log(timeformat);
-                hour = (parseInt(hour) + 1).toString();
-                arr2.push(timeformat);
+                hour = time[0];
+                while (time[1] != hour) {
+                    var timeformat = hour + ":00 -" + (parseInt(hour) + 1).toString() + ":00";
+                    console.log(timeformat);
+                    hour = (parseInt(hour) + 1).toString();
+                    arr2.push(timeformat);
 
-            }
-            ratingModel.getById(req.params.id, function(reviews) {
-                var rating = 0;
-                for (var j = 0; j < reviews.length; j++) {
-                    rating += reviews[j].rating;
                 }
-                rating = rating / reviews.length;
-                res.render('user/appointment', { Doctor: results, date: arr, time: arr2, reviews: reviews, avg: rating })
+                ratingModel.getById(req.params.id, function(reviews) {
+                    var rating = 0;
+                    for (var j = 0; j < reviews.length; j++) {
+                        rating += reviews[j].rating;
+                    }
+                    rating = rating / reviews.length;
+                    res.render('user/appointment', { Doctor: results, date: arr, time: arr2, reviews: reviews, avg: rating })
+                })
             })
-        })
+    } else {
+
+        res.render('user/login');
+    }
 })
 router.post('/appointment/:id', [
     check('app_date', 'Invalid date')
@@ -98,204 +105,7 @@ router.post('/appointment/:id', [
     .exists()
     .isLength({ min: 10 }),
 ], (req, res) => {
-    const errors = validationResult(req)
-    if (!errors.isEmpty()) {
-        console.log("validation failed");
-        const alert = errors.array();
-        alert.forEach(myFunction);
-
-        function myFunction(item) {
-            console.log(item);
-        }
-    } else {
-        var app = {
-            date: req.body.app_date,
-            time: req.body.app_time,
-            status: "pending",
-            d_Id: req.params.id,
-            u_Id: req.cookies["Id"],
-            p_Id: ""
-
-        }
-        appointmentModel.insert(app, function(status) {
-            if (status) {
-                var inv = {
-                    total: req.body.cost,
-                    transaction: req.body.tran,
-                    status: "pending",
-                }
-                if (req.body.cash == "bkash") {
-                    appointmentModel.insertInvoice(inv, function(status) {
-                        if (status) {
-                            res.redirect('../apptable');
-                            console.log("bkash");
-                        } else {
-                            console.log("invoice error");
-                        }
-                    })
-                } else {
-                    console.log("cash");
-                    res.redirect('../apptable');
-                }
-            } else {
-                console.log("error");
-            }
-        })
-    }
-
-
-})
-router.get('/navbar', (req, res) => {
-
-    res.render('shared/navbar');
-
-})
-router.get('/notice', (req, res) => {
-
-    noticeModel.getNotice(function(results) {
-        res.send(JSON.stringify(results));
-    })
-
-})
-router.get('/review/:id', (req, res) => {
-    ratingModel.checkRating(req.params.id, req.cookies["Id"], function(results) {
-        if (results.length > 0) {
-            res.render('user/review', { msg: "Rated" });
-        } else {
-            res.render('user/review', { msg: "" });
-        }
-    })
-})
-
-router.post('/review/:id', (req, res) => {
-
-    var rating = {
-        rating: req.body.rating,
-        review: req.body.review,
-        d_Id: req.params.id,
-        u_Id: req.cookies["Id"]
-    }
-    ratingModel.insert(rating, function(status) {
-        if (status) {
-            res.redirect('/userdash');
-        } else {
-            console.log("Server Error");
-        }
-    })
-})
-router.get('/search/:str', (req, res) => {
-
-    userModel.getDoctors(function(results) {
-        const result = results.filter(doc => doc.username.toLowerCase() === req.params.str.toLowerCase() ||
-            doc.specialization.toLowerCase() === req.params.str.toLowerCase());
-        console.log(result);
-        res.render('user/search', { Doctors: result });
-    })
-
-})
-router.get('/ambulance', (req, res) => {
-
-    ambulanceModel.getAmbulance(function(results) {
-        console.log(results);
-        res.render('user/ambulance', { Ambulances: results });
-    })
-
-})
-router.get('/apptable', (req, res) => {
-
-    appointmentModel.getAppointments(function(results) {
-        if (results.length > 0) {
-            var c = [];
-            for (var i = 0; i < results.length; i++) {
-                var app = results;
-                var doc = {};
-                var j = 0;
-
-                userModel.getDoctorById(results[i].d_Id, function(result) {
-                    doc = {
-                        name: result[0].username,
-                        date: app[j].date,
-                        time: app[j].time,
-                        status: app[j].status,
-                        p_Id: app[j].p_Id
-                    }
-                    c.push(doc);
-                    if (j == results.length - 1) {
-                        res.render('user/apptable', { app: c });
-                    }
-                    j++;
-                })
-            }
-        }
-    })
-})
-router.get('/myprofile', (req, res) => {
-    userModel.getById(req.cookies["Id"], function(result) {
-        res.render('user/myprofile', { user: result });
-    })
-
-})
-router.post('/myprofile', (req, res) => {
-    var user = {
-        username: req.body.username,
-        password: req.body.password,
-        id: req.cookies["Id"]
-    }
-    console.log(user);
-    userModel.myProfileUpdate(user, function(status) {
-        if (status) {
-            res.redirect('myprofile');
-        }
-    })
-
-})
-router.get('/membership', (req, res) => {
-    res.render('user/membership')
-})
-router.post('/picupload', (req, res) => {
-
-    let fileName = req.files.dp;
-    let uploadPath = 'assets/uploads/' + fileName.name;
-    var user = {
-        userid: req.cookies["Id"],
-        uploadPath: uploadPath
-    };
-    userModel.uploadPicture(user, function(status) {
-        if (status) {
-            fileName.mv(uploadPath, (err) => {
-                if (err) {
-                    return res.status(500).send(err);
-                }
-
-            });
-            res.redirect('myprofile');
-        } else {
-            console.log("can not upload");
-        }
-
-    });
-});
-router.get('/complain', (req, res) => {
-    var msg = "";
-    complainModel.getComplainById(req.cookies['Id'], function(results) {
-        if (results.length > 0) {
-            console.log(results);
-            msg = "complained";
-            res.render('user/complain', { msg: msg });
-        } else {
-            msg = "";
-            res.render('user/complain', { msg: msg });
-        }
-    })
-
-})
-router.post('/complain', [
-        check('complain', 'Invalid complain')
-        .exists()
-        .isLength({ min: 10 })
-        .isLength({ max: 100 })
-    ],
-    (req, res) => {
+    if (req.cookies["cred"] != null && req.cookies["type"] == "Patient") {
         const errors = validationResult(req)
         if (!errors.isEmpty()) {
             console.log("validation failed");
@@ -306,27 +116,283 @@ router.post('/complain', [
                 console.log(item);
             }
         } else {
+            var app = {
+                date: req.body.app_date,
+                time: req.body.app_time,
+                status: "pending",
+                d_Id: req.params.id,
+                u_Id: req.cookies["Id"],
+                p_Id: ""
 
-            var complain = {
-                details: req.body.complain,
-                u_Id: req.cookies["Id"]
             }
-            complainModel.complainInsert(complain, function(status) {
+            appointmentModel.insert(app, function(status) {
                 if (status) {
-                    res.render('user/userdash');
+                    var inv = {
+                        total: req.body.cost,
+                        transaction: req.body.tran,
+                        status: "pending",
+                        date: new Date().toLocaleDateString(),
+                        u_Id: req.cookies["Id"]
+                    }
+                    if (req.body.cash == "bkash") {
+                        appointmentModel.insertInvoice(inv, function(status) {
+                            if (status) {
+                                res.redirect('../apptable');
+                                console.log("bkash");
+                            } else {
+                                console.log("invoice error");
+                            }
+                        })
+                    } else {
+                        console.log("cash");
+                        res.redirect('../apptable');
+                    }
+                } else {
+                    console.log("error");
                 }
             })
         }
 
+    } else {
+        res.render("user/login");
+    }
+})
+router.get('/navbar', (req, res) => {
+    if (req.cookies["cred"] != null && req.cookies["type"] == "Patient") {
+        res.render('shared/navbar');
+    } else {
+        res.render("user/login");
+    }
+
+})
+router.get('/notice', (req, res) => {
+    if (req.cookies["cred"] != null && req.cookies["type"] == "Patient") {
+        noticeModel.getNotice(function(results) {
+            res.send(JSON.stringify(results));
+        })
+    } else {
+        res.render("user/login");
+    }
+
+})
+router.get('/review/:id', (req, res) => {
+    if (req.cookies["cred"] != null && req.cookies["type"] == "Patient") {
+        ratingModel.checkRating(req.params.id, req.cookies["Id"], function(results) {
+            if (results.length > 0) {
+                res.render('user/review', { msg: "Rated" });
+            } else {
+                res.render('user/review', { msg: "" });
+            }
+        })
+    } else {
+        res.render("user/login");
+    }
+})
+
+router.post('/review/:id', (req, res) => {
+    if (req.cookies["cred"] != null && req.cookies["type"] == "Patient") {
+        var rating = {
+            rating: req.body.rating,
+            review: req.body.review,
+            d_Id: req.params.id,
+            u_Id: req.cookies["Id"]
+        }
+        ratingModel.insert(rating, function(status) {
+            if (status) {
+                res.redirect('/userdash');
+            } else {
+                console.log("Server Error");
+            }
+        })
+    } else {
+        res.render("user/login");
+    }
+})
+router.get('/search/:str', (req, res) => {
+    if (req.cookies["cred"] != null && req.cookies["type"] == "Patient") {
+        userModel.getDoctors(function(results) {
+            const result = results.filter(doc => doc.username.toLowerCase() === req.params.str.toLowerCase() ||
+                doc.specialization.toLowerCase() === req.params.str.toLowerCase());
+            console.log(result);
+            res.render('user/search', { Doctors: result });
+        })
+    } else {
+        res.render("user/login");
+    }
+
+})
+router.get('/ambulance', (req, res) => {
+    if (req.cookies["cred"] != null && req.cookies["type"] == "Patient") {
+        ambulanceModel.getAmbulance(function(results) {
+            console.log(results);
+            res.render('user/ambulance', { Ambulances: results });
+        })
+    } else {
+        res.render("user/login");
+    }
+
+})
+router.get('/apptable', (req, res) => {
+    if (req.cookies["cred"] != null && req.cookies["type"] == "Patient") {
+        appointmentModel.getAppointments(function(results) {
+            if (results.length > 0) {
+                var c = [];
+                for (var i = 0; i < results.length; i++) {
+                    var app = results;
+                    var doc = {};
+                    var j = 0;
+
+                    userModel.getDoctorById(results[i].d_Id, function(result) {
+                        doc = {
+                            name: result[0].username,
+                            date: app[j].date,
+                            time: app[j].time,
+                            status: app[j].status,
+                            p_Id: app[j].p_Id
+                        }
+                        c.push(doc);
+                        if (j == results.length - 1) {
+                            res.render('user/apptable', { app: c });
+                        }
+                        j++;
+                    })
+                }
+            }
+        })
+    } else {
+        res.render("user/login");
+    }
+})
+router.get('/myprofile', (req, res) => {
+    if (req.cookies["cred"] != null && req.cookies["type"] == "Patient") {
+        userModel.getById(req.cookies["Id"], function(result) {
+            res.render('user/myprofile', { user: result });
+        })
+    } else {
+        res.render("user/login");
+    }
+
+})
+router.post('/myprofile', (req, res) => {
+    if (req.cookies["cred"] != null && req.cookies["type"] == "Patient") {
+        var user = {
+            username: req.body.username,
+            password: req.body.password,
+            id: req.cookies["Id"]
+        }
+        console.log(user);
+        userModel.myProfileUpdate(user, function(status) {
+            if (status) {
+                res.redirect('myprofile');
+            }
+        })
+    } else {
+        res.render("user/login");
+    }
+
+})
+router.get('/membership', (req, res) => {
+    if (req.cookies["cred"] != null && req.cookies["type"] == "Patient") {
+        res.render('user/membership')
+    } else {
+        res.render("user/login");
+    }
+})
+router.post('/picupload', (req, res) => {
+    if (req.cookies["cred"] != null && req.cookies["type"] == "Patient") {
+
+        let fileName = req.files.dp;
+        let uploadPath = 'assets/uploads/' + fileName.name;
+        var user = {
+            userid: req.cookies["Id"],
+            uploadPath: uploadPath
+        };
+        userModel.uploadPicture(user, function(status) {
+            if (status) {
+                fileName.mv(uploadPath, (err) => {
+                    if (err) {
+                        return res.status(500).send(err);
+                    }
+
+                });
+                res.redirect('myprofile');
+            } else {
+                console.log("can not upload");
+            }
+
+        });
+    } else {
+        res.render("user/login");
+    }
+});
+router.get('/complain', (req, res) => {
+    if (req.cookies["cred"] != null && req.cookies["type"] == "Patient") {
+        var msg = "";
+        complainModel.getComplainById(req.cookies['Id'], function(results) {
+            if (results.length > 0) {
+                console.log(results);
+                msg = "complained";
+                res.render('user/complain', { msg: msg });
+            } else {
+                msg = "";
+                res.render('user/complain', { msg: msg });
+            }
+        })
+    } else {
+        res.render("user/login");
+    }
+
+})
+router.post('/complain', [
+        check('complain', 'Invalid complain')
+        .exists()
+        .isLength({ min: 10 })
+        .isLength({ max: 100 })
+    ],
+    (req, res) => {
+        if (req.cookies["cred"] != null && req.cookies["type"] == "Patient") {
+            const errors = validationResult(req)
+            if (!errors.isEmpty()) {
+                console.log("validation failed");
+                const alert = errors.array();
+                alert.forEach(myFunction);
+
+                function myFunction(item) {
+                    console.log(item);
+                }
+            } else {
+
+                var complain = {
+                    details: req.body.complain,
+                    u_Id: req.cookies["Id"]
+                }
+                complainModel.complainInsert(complain, function(status) {
+                    if (status) {
+                        res.render('user/userdash');
+                    }
+                })
+            }
+        } else {
+            res.render("user/login");
+        }
+
     })
 router.get('/lab', (req, res) => {
-    labModel.labTest(function(results) {
-        res.render('user/lab', { tests: results });
-    })
+    if (req.cookies["cred"] != null && req.cookies["type"] == "Patient") {
+        labModel.labTest(function(results) {
+            res.render('user/lab', { tests: results });
+        })
+    } else {
+        res.render("user/login");
+    }
 
 })
 router.get('/financial', (req, res) => {
-    res.render('user/financial');
+    if (req.cookies["cred"] != null && req.cookies["type"] == "Patient") {
+        res.render('user/financial');
+    } else {
+        res.render("user/login");
+    }
 
 
 })
@@ -337,28 +403,36 @@ router.post('/financial', [
         .isLength({ max: 100 })
     ],
     (req, res) => {
-        const errors = validationResult(req)
-        if (!errors.isEmpty()) {
-            console.log("validation failed");
-            const alert = errors.array();
-            alert.forEach(myFunction);
+        if (req.cookies["cred"] != null && req.cookies["type"] == "Patient") {
+            const errors = validationResult(req)
+            if (!errors.isEmpty()) {
+                console.log("validation failed");
+                const alert = errors.array();
+                alert.forEach(myFunction);
 
-            function myFunction(item) {
-                console.log(item);
+                function myFunction(item) {
+                    console.log(item);
+                }
+            } else {
+                membershipModel.financeUpdate(req.cookies["Id"], function(status) {
+                    if (status) {
+                        res.render('user/userdash');
+                    }
+
+                })
+
+
             }
         } else {
-            membershipModel.financeUpdate(req.cookies["Id"], function(status) {
-                if (status) {
-                    res.render('user/userdash');
-                }
-
-            })
-
-
+            res.render("user/login");
         }
     })
 router.get('/premium', (req, res) => {
-    res.render('user/premium');
+    if (req.cookies["cred"] != null && req.cookies["type"] == "Patient") {
+        res.render('user/premium');
+    } else {
+        res.render("user/login");
+    }
 
 
 })
@@ -368,26 +442,40 @@ router.post('/premium', [
         .isLength({ min: 10 })
     ],
     (req, res) => {
-        const errors = validationResult(req)
-        if (!errors.isEmpty()) {
-            console.log("validation failed");
-            const alert = errors.array();
-            alert.forEach(myFunction);
+        if (req.cookies["cred"] != null && req.cookies["type"] == "Patient") {
+            const errors = validationResult(req)
+            if (!errors.isEmpty()) {
+                console.log("validation failed");
+                const alert = errors.array();
+                alert.forEach(myFunction);
 
-            function myFunction(item) {
-                console.log(item);
+                function myFunction(item) {
+                    console.log(item);
+                }
+            } else {
+                membershipModel.premiumUpdate(req.cookies["Id"], function(status) {
+                    if (status) {
+                        res.render('user/userdash');
+                    }
+
+                })
+
+
             }
         } else {
-            membershipModel.premiumUpdate(req.cookies["Id"], function(status) {
-                if (status) {
-                    res.render('user/userdash');
-                }
-
-            })
-
-
+            res.render("user/login");
         }
     })
+router.get('/invoice', (req, res) => {
+    if (req.cookies["cred"] != null && req.cookies["type"] == "Patient") {
+        appointmentModel.getInvoice(function(results) {
+            res.render('user/invoice', { invoices: results });
+        })
+    } else {
+        res.render("user/login");
+    }
+
+})
 
 
 
