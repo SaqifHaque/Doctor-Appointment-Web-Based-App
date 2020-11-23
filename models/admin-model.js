@@ -224,7 +224,7 @@ receptionistStatus: function (user, callback) {
 	},
 	*/
 	delete: function(id, callback) {
-		var sql = "delete from user where id = '" + id + "'";
+		var sql = "delete from users where id = '" + id + "'";
         console.log(sql);
 
         db.execute(sql, function(status) {
