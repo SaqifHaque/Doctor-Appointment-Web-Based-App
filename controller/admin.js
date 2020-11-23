@@ -1,4 +1,6 @@
+const { render } = require('ejs');
 var express = require('express');
+const { doctorStatus } = require('../../models/admin-model');
 var router = express.Router();
 var adminModel = require.main.require('./models/admin-model');
 router.get('*', function (req, res, next) {
@@ -46,16 +48,21 @@ router.post('/profile', function (req, res) {
 		res.send('password mismatch');
 	}
 });
+
 router.get('/addNewDoctor', function (req, res) {
 	var user = {
-		fname: '',
-		lname: '',
+		id: '',
 		username: '',
-		email: '',
-		phone: '',
+		
+		email:'',
+		bloodgroup:'',
+		phonenumber:'',
+		dept:'',
+		type:'',
+		status:'',
+		gender:'',
 		password: '',
-		fathersName: '',
-		nid: ''
+		cpassword:'',
 	};
 	res.render('admin/addNewDoctor', {
 		user: user
@@ -65,14 +72,18 @@ router.get('/addNewDoctor', function (req, res) {
 router.post('/addNewDoctor', function (req, res) {
 	if (req.body.password == req.body.cpassword) {
 		var user = {
-			fname: req.body.fname,
-			lname: req.body.lname,
-			username: req.body.uname,
+			id: req.body.id,
+			username: req.body.username,
 			email: req.body.email,
-			phone: req.body.phone,
+			bloodgroup: req.body.bloodgroup,
+			phonenumber:req.body.phonenumber,
 			password: req.body.password,
-			fathersName: req.body.fathersName,
-			nid: req.body.nid
+		      status:req.body.status,
+			type:req.body.type,
+			gender:req.body.status,
+			cpassword: req.body.cpassword,
+			
+			
 		};
 		adminModel.insert(user, function (status) {
 			if (status) {
@@ -83,10 +94,14 @@ router.post('/addNewDoctor', function (req, res) {
 				});
 			}
 		});
-	} else {
+		}
+		 else 
+		{
 		res.send('password mismatch');
-	}
-});
+		}
+		
+		});
+		
 router.get('/view_Doctor', function (req, res) {
 	adminModel.getAllDoctor(function (results) {
 		if (results.length > 0) {
@@ -202,7 +217,7 @@ router.get('/receptionistinfo/:username', function (req, res) {
 		}
 		adminModel.receptionistStatus(user, function (status) {
 			if (status) {
-				adminModel.getreceptionistProfile(req.params.username, function (result) {
+				adminModel.getReceptionistProfile(req.params.username, function (result) {
 					res.render('admin/getProfile', {
 						user: result,
 						table: 'receptionistinfo'
@@ -272,14 +287,16 @@ router.get('/view_Booked', function (req, res) {
 
 });
 router.get('/assignDoctor', function (req, res) {
-	adminModel.getAllDoctor(function (results) {
-		if (results.length > 0) {
+	adminModel.assignDoctor(function (results) {
+		if (results.length > 0)
+		 {
 			res.render('admin/assignDoctor', {
-				userlist: results
+				user:results
 			});
 		} else {
 			res.render('admin/assignDoctor', {
-				userlist: results
+				//userlist: results
+				user:results
 			});
 		}
 	});
@@ -287,14 +304,14 @@ router.get('/assignDoctor', function (req, res) {
 });
 router.post('/assignDoctor', function (req, res) {
 	var user = {
-		username: req.body.username,
-		dept: req.body.dept,
-		post: req.body.post,
+		d_Id: req.body.d_Id,
+		qualification: req.body.qualification,
+		specialization: req.body.specialization,
 	};
 
 	adminModel.assignDoctor(user, function (status) {
 		if (status) {
-			res.render('admin/view_Doctor');
+			res.redirect('admin/view_Doctor');
 		} else {
 			res.redirect('/admin/assignDoctor');
 		}
@@ -329,15 +346,31 @@ router.post('/removeDoctor:username', function (req, res) {
 		});
 	});
 	*/
-	router.get('/removeDoctor', function(req,res){
-		res.render('/admin/view_Doctor');
+	router.get('/removeDoctor:id', function(req,res){
+
+		adminModel.delete(user,function(status){
+			if (status) {
+				res.render('/admin/removeDoctor');
+			} else {
+				res.redirect('admin/view_Doctor', {
+					user: user
+				});
+			}
+		
+		})
+
+		})
+
+
+
+		
 	
-});
-router.post('/removeDoctor:username',function(req,res)
+
+router.post('/removeDoctor:id',function(req,res)
 {
 	adminModel.delete(user, function (status) {
 		if (status) {
-			res.render('/admin/view_Doctor');
+			res.redirect('/admin/view_Doctor');
 		} else {
 			res.redirect('admin/view_Doctor', {
 				user: user
@@ -345,6 +378,42 @@ router.post('/removeDoctor:username',function(req,res)
 		}
 });
 });
+/*
+router.get('/createDoctor',(req,res)=>{
+	adminModel.insert(user,function(status){
+if(status)
+	{
+		res.render('/admin/view_Doctor', {title: 'all user',user:result})
+	}
+
+	else
+	{
+		res.redirect('admin/view_Doctor'{
+			user:user
+
+		});
+	}
+	
+});
+});
+router.post('/createDoctor',(req,res)=>{
+const createDoctor =new createDoctor(req.body);
+createDoctor.save()
+.then((result)=>
+	{
+		res.redirect('/createDoctor');
+
+
+	})
+	.catch((err)=>{
+		console.log(err);
+
+
+
+	})
+});
+*/
+ 
 
 
 
