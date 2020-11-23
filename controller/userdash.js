@@ -79,11 +79,21 @@ router.get('/appointment/:id', (req, res) => {
                 }
                 ratingModel.getById(req.params.id, function(reviews) {
                     var rating = 0;
+                    var che = "";
                     for (var j = 0; j < reviews.length; j++) {
                         rating += reviews[j].rating;
                     }
                     rating = rating / reviews.length;
-                    res.render('user/appointment', { Doctor: results, date: arr, time: arr2, reviews: reviews, avg: rating, type: req.cookies["status"] })
+                    if (req.cookies['status'] == "Verified:Premium") {
+                        var cost = (parseInt(results[0].charge) - (parseInt(results[0].charge) * 0.1)).toString();
+                    } else if (req.cookies['status'] == "Verified:Finance") {
+                        var cost = "0";
+                        che = "check";
+                    } else {
+                        var cost = results[0].charge;
+                    }
+                    console.log(che);
+                    res.render('user/appointment', { charge: cost, Doctor: results, date: arr, time: arr2, reviews: reviews, avg: rating, status: che })
                 })
             })
     } else {
@@ -144,6 +154,48 @@ router.post('/appointment/:id', [
                         console.log("cash");
                         res.redirect('../apptable');
                     }
+                } else {
+                    console.log("error");
+                }
+            })
+        }
+
+    } else {
+        res.redirect('/login');
+    }
+})
+router.post('/appointment1/:id', [
+    check('app_date', 'Invalid date')
+    .exists()
+    .isLength({ min: 1 }),
+    check('app_time', 'Invalid time')
+    .exists()
+    .isLength({ min: 1 }),
+], (req, res) => {
+    if (req.cookies["cred"] != null && req.cookies["type"] == "Patient") {
+        const errors = validationResult(req)
+        if (!errors.isEmpty()) {
+            console.log("validation failed");
+            const alert = errors.array();
+            alert.forEach(myFunction);
+
+            function myFunction(item) {
+                console.log(item);
+            }
+        } else {
+            var app = {
+                date: req.body.app_date,
+                time: req.body.app_time,
+                status: "pending",
+                d_Id: req.params.id,
+                u_Id: req.cookies["Id"],
+                p_Id: ""
+
+            }
+            appointmentModel.insert(app, function(status) {
+                if (status) {
+
+                    res.redirect('../apptable');
                 } else {
                     console.log("error");
                 }

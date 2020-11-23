@@ -28,7 +28,7 @@ router.post('/', (req, res) => {
                 res.cookie('type', results[0].type);
                 res.cookie('Id', results[0].id);
                 res.cookie('status', results[0].status);
-                if (results[0].status == "Unverified") {
+                if (results[0].status != "Unverified") {
                     if (results[0].type == "Admin") {
                         // res.redirect('/registration');
                     } else if (results[0].type == "Doctor") {
