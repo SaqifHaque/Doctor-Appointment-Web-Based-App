@@ -61,53 +61,44 @@
                 <%= Doctor[0].availability %>
             </h4>
             <br>
+            <h4>availability:
+                <%= Doctor[0].time %>
+            </h4>
+            <br>
+
             <div class="rs-select2 js-select-simple select--no-search">
                 <select id="date" name="date">
-            <option value="" selected="selected">Choose Date</option>
+            <option name="date" value="" selected="selected">Choose Date</option>
             <% for(const d of date){ %>
                 <option value="<%= d %>"><%= d %></option> 
                 <% } %>
            
         </select>
                 <select id="time" name="time">
-            <option value="" selected="selected">Choose Time</option>
+            <option name="time" value="" selected="selected">Choose Time</option>
             <% for(const t of time){ %>
                 <option value="<%= t
                  %>"><%= t %></option> 
                 <% } %>
            
         </select>
-                <% if(status.length == "check"){ %>
-                    <form method="POST" action="appointment1/<%Doctor[0].d_Id%>">
-                        <div class="mt-8">
-                            <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-        <!-- Heroicon name: check -->
-        <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-          <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-        </svg>
-        Proceed Apointment
-      </button>
-                        </div>
-                    </form>
-                    <% } else { %>
-                        <div class="mt-8">
-                            <button id="button" type="button" class="modal-open inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+
+                <div class="mt-8">
+                    <button id="button" type="button" class="modal-open inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                 <!-- Heroicon name: check -->
                 <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                   <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
                 </svg>
                 Proceed Apointment
               </button>
-                        </div>
-                        <% } %>
+                </div>
+                <div class="py-4">
+                    <p class="text-indigo-600 text-xl font-bold">
+                        Rating:
+                        <%= avg %>
 
-                            <div class="py-4">
-                                <p class="text-indigo-600 text-xl font-bold">
-                                    Rating:
-                                    <%= avg %>
-
-                                </p>
-                            </div>
+                    </p>
+                </div>
             </div>
         </div>
         <!-- reviews  -->
@@ -178,35 +169,36 @@
                             <label for="">Visiting Cost</label>
                             <input name="cost" type="text" class="w-full shadow-sm" value="<%=charge%>" readonly>
 
-
-                            <span class="text-gray-700 mt-2">Payment Type</span>
-                            <div class="mt-2">
-                                <div id="myRadioGroup" class="space-x-4">
-                                    <label class="inline-flex items-center">
+                            <% if(status != "check"){ %>
+                                <span class="text-gray-700 mt-2">Payment Type</span>
+                                <div class="mt-2">
+                                    <div id="myRadioGroup" class="space-x-4">
+                                        <label class="inline-flex items-center">
                                 <input type="radio" class="form-radio" name="cash" checked="checked" value="bkash" />
                                 <span class="ml-2">Bkash</span>
                             </label>
-                                    <label class="inline-flex items-center">
+                                        <label class="inline-flex items-center">
                                 <input type="radio" class="form-radio" name="cash" value="cash" />
                                 <span class="ml-2">Cash on check up</span>
                             </label>
 
-                                    <div class="mt-2">
-                                        <div id="Cars2" class="desc">
-                                            Pay On XXX-XXX-XXX-XX then provide the bkash transaction Id.
-                                            <input id="tran" name="tran" type="text" class="w-full shadow-sm bg-gray-100"> </div>
-                                        <div id="Cars3" class="desc" style="display: none;">
-                                            <!-- Cash on check up -->
+                                        <div class="mt-2">
+                                            <div id="Cars2" class="desc">
+                                                Pay On XXX-XXX-XXX-XX then provide the bkash transaction Id.
+                                                <input id="tran" name="tran" type="text" class="w-full shadow-sm bg-gray-100"> </div>
+                                            <div id="Cars3" class="desc" style="display: none;">
+                                                <!-- Cash on check up -->
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                    <%  } %>
 
-                                <!--Footer-->
-                                <div class="flex justify-end pt-2">
-                                    <button id="btn" type="submit" class="modal-close px-4 bg-indigo-500 p-3 rounded-lg text-white hover:bg-indigo-400">Proceed</button>
-                                </div>
+                                        <!--Footer-->
+                                        <div class="flex justify-end pt-2">
+                                            <button id="btn" type="submit" class="modal-close px-4 bg-indigo-500 p-3 rounded-lg text-white hover:bg-indigo-400">Proceed</button>
+                                        </div>
 
-                            </div>
+                                </div>
                         </form>
                     </div>
                 </div>

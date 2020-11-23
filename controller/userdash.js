@@ -44,8 +44,8 @@ router.get('/appointment/:id', (req, res) => {
         userModel.getDoctorById(req.params.id,
             function(results) {
                 //var str = results[0].avaibality;
-                var str = "Thu,Sat";
-                var str2 = "14-18";
+                var str = results[0].availability;
+                var str2 = results[0].time;
                 var time = str2.split("-");
                 var schedule = str.split(",");
                 let arr = [];
@@ -60,7 +60,7 @@ router.get('/appointment/:id', (req, res) => {
                 weekday[4] = "Thu";
                 weekday[5] = "Fri";
                 weekday[6] = "Sat";
-                for (var i = 0; i < 10; i++) {
+                for (var i = 0; i < 20; i++) {
                     d.setDate(d.getDate() + 1)
                     var n = weekday[d.getDay()];
                     if (schedule.includes(n)) {
@@ -114,94 +114,77 @@ router.post('/appointment/:id', [
 ], (req, res) => {
     if (req.cookies["cred"] != null && req.cookies["type"] == "Patient") {
         const errors = validationResult(req)
-        if (!errors.isEmpty()) {
-            console.log("validation failed");
+        if (req.cookies["status"] == "Verified:Finance") {
             const alert = errors.array();
-            alert.forEach(myFunction);
+            if (errors.length > 1) {
 
-            function myFunction(item) {
-                console.log(item);
-            }
-        } else {
-            var app = {
-                date: req.body.app_date,
-                time: req.body.app_time,
-                status: "pending",
-                d_Id: req.params.id,
-                u_Id: req.cookies["Id"],
-                p_Id: ""
+            } else {
+                var app = {
+                    date: req.body.app_date,
+                    time: req.body.app_time,
+                    status: "pending",
+                    d_Id: req.params.id,
+                    u_Id: req.cookies["Id"],
+                    p_Id: ""
 
-            }
-            appointmentModel.insert(app, function(status) {
-                if (status) {
-                    var inv = {
-                        total: req.body.cost,
-                        transaction: req.body.tran,
-                        status: "pending",
-                        date: new Date().toLocaleDateString(),
-                        u_Id: req.cookies["Id"]
-                    }
-                    if (req.body.cash == "bkash") {
-                        appointmentModel.insertInvoice(inv, function(status) {
-                            if (status) {
-                                res.redirect('../apptable');
-                                console.log("bkash");
-                            } else {
-                                console.log("invoice error");
-                            }
-                        })
-                    } else {
-                        console.log("cash");
+                }
+                appointmentModel.insert(app, function(status) {
+                    if (status) {
                         res.redirect('../apptable');
                     }
-                } else {
-                    console.log("error");
-                }
-            })
-        }
 
-    } else {
-        res.redirect('/login');
-    }
-})
-router.post('/appointment1/:id', [
-    check('app_date', 'Invalid date')
-    .exists()
-    .isLength({ min: 1 }),
-    check('app_time', 'Invalid time')
-    .exists()
-    .isLength({ min: 1 }),
-], (req, res) => {
-    if (req.cookies["cred"] != null && req.cookies["type"] == "Patient") {
-        const errors = validationResult(req)
-        if (!errors.isEmpty()) {
-            console.log("validation failed");
-            const alert = errors.array();
-            alert.forEach(myFunction);
+                })
 
-            function myFunction(item) {
-                console.log(item);
             }
+
         } else {
-            var app = {
-                date: req.body.app_date,
-                time: req.body.app_time,
-                status: "pending",
-                d_Id: req.params.id,
-                u_Id: req.cookies["Id"],
-                p_Id: ""
+            if (!errors.isEmpty()) {
+                console.log("validation failed");
+                const alert = errors.array();
+                alert.forEach(myFunction);
 
-            }
-            appointmentModel.insert(app, function(status) {
-                if (status) {
-
-                    res.redirect('../apptable');
-                } else {
-                    console.log("error");
+                function myFunction(item) {
+                    console.log(item);
                 }
-            })
-        }
+            } else {
+                var app = {
+                    date: req.body.app_date,
+                    time: req.body.app_time,
+                    status: "pending",
+                    d_Id: req.params.id,
+                    u_Id: req.cookies["Id"],
+                    p_Id: ""
 
+                }
+                appointmentModel.insert(app, function(status) {
+                    if (status) {
+                        var inv = {
+                            total: req.body.cost,
+                            transaction: req.body.tran,
+                            status: "pending",
+                            date: new Date().toLocaleDateString(),
+                            u_Id: req.cookies["Id"]
+                        }
+                        if (req.body.cash == "bkash") {
+                            appointmentModel.insertInvoice(inv, function(status) {
+                                if (status) {
+                                    res.redirect('../apptable');
+                                    console.log("bkash");
+                                } else {
+                                    console.log("invoice error");
+                                }
+                            })
+                        } else {
+                            console.log("cash");
+                            res.redirect('../apptable');
+                        }
+                    } else {
+                        console.log("error");
+                    }
+                })
+            }
+
+        }
     } else {
         res.redirect('/login');
     }

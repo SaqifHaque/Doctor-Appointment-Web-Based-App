@@ -54,11 +54,12 @@
                         <span class="rounded bg-yellow-400 py-1 px-3 text-xs font-bold"><%= ap.status %></span>
                     </td>
                     <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b text-center block lg:table-cell relative lg:static">
-                        <span class="lg:hidden absolute top-0 left-0 bg-blue-200 px-2 py-1 text-xs font-bold uppercase">Actions</span>
-                        <a href="#" class="text-blue-400 hover:text-blue-600 underline">Cancel</a>
-                        <form method="POST" action="pdf/<%=ap.p_Id%>">
-                            <button type="submit" class="text-blue-400 hover:text-blue-600 underline">Prescription</a>
+                        <% if(ap.status == "complete") { %>
+                            <span class="lg:hidden absolute top-0 left-0 bg-blue-200 px-2 py-1 text-xs font-bold uppercase">Actions</span>
+                            <form method="POST" action="pdf/<%=ap.p_Id%>">
+                                <button type="submit" class="text-blue-400 hover:text-blue-600 underline">Prescription</a>
                         </form>
+                        <% } %>
                     </td>
                 </tr>
                 <% } %>

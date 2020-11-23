@@ -8,6 +8,7 @@ const login = require('./controller/login');
 const pincode = require('./controller/pincode');
 const userdash = require('./controller/userdash');
 const download = require('./controller/download');
+const logout = require('./controller/logout');
 const app = express();
 const toastr = require('express-toastr');
 const fileUpload = require('express-fileupload');
@@ -32,6 +33,7 @@ app.use('/login', login);
 app.use('/pincode', pincode);
 app.use('/userdash', userdash);
 app.use('/download', download);
+app.use('/logout', logout);
 
 //route
 app.get('/', (req, res) => {
