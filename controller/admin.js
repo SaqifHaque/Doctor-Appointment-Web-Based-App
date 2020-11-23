@@ -61,6 +61,7 @@ router.get('/addNewDoctor', function (req, res) {
 		type:'',
 		status:'',
 		gender:'',
+		profilepic:'',
 		password: '',
 		cpassword:'',
 	};
@@ -78,7 +79,8 @@ router.post('/addNewDoctor', function (req, res) {
 			bloodgroup: req.body.bloodgroup,
 			phonenumber:req.body.phonenumber,
 			password: req.body.password,
-		      status:req.body.status,
+			  status:req.body.status,
+			  profilepic:req.body.profilepic,
 			type:req.body.type,
 			gender:req.body.status,
 			cpassword: req.body.cpassword,
