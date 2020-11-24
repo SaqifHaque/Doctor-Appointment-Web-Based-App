@@ -568,6 +568,17 @@ router.get('/invoice', (req, res) => {
     }
 
 })
+router.get('/notices', (req, res) => {
+    if (req.cookies["cred"] != null && req.cookies["type"] == "Patient") {
+        noticeModel.getNotice(function(results) {
+            res.render('user/notices', { notices: results });
+        })
+    } else {
+        res.redirect('/login');
+    }
+
+})
+
 
 
 

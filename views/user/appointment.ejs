@@ -67,12 +67,12 @@
             <br>
             <h4>Visiting Cost:
                 <% if(status == "pre") {%>
-                    <span class="line-through">
+                    <span class="line-through text-red-400">
                         <%=Doctor[0].charge %>
                     </span>
                     <%=charge %>
                         <% } else if(status == "check"){ %>
-                            <span>Free</span>
+                            <span class="text-blue-600">Free</span>
                             <% } else {%>
                                 <%=Doctor[0].charge %>
                                     <% } %>

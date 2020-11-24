@@ -17,6 +17,7 @@
     <!-- <link href="assets/Home/css/heroic-features.css" rel="stylesheet"> -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+    <link href="../../assets/Index/js/toastr.min.css" rel="stylesheet">
 
 </head>
 
@@ -26,7 +27,7 @@
     <!-- Page Content -->
     <div class="container">
         <main class="px-3">
-            <div class="text-4xl sm:text-5xl text-center my-10">Our Top Doctors</div>
+            <div class="text-4xl sm:text-5xl text-center my-10">Search Results</div>
 
             <div class="grid md:grid-cols-3 gap-8 m-5 max-w-5xl m-auto">
                 <% for(const sub of Doctors){ %>
@@ -72,6 +73,7 @@
 
     <!-- Bootstrap core JavaScript -->
     <script src="https://code.jquery.com/jquery-3.2.1.min.js "></script>
+    <script src="../../assets/Index/js/toastr.min.js"></script>
     <script>
         $("#navbar").load("../navbar");
     </script>
