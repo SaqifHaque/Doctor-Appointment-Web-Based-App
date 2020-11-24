@@ -86,14 +86,16 @@
 </script>
 <script>
     toastr.options = {
-        "closeButton": false,
+        "closeButton": true,
         "debug": false,
-        "newestOnTop": false,
-        "progressBar": false,
+        "newestOnTop": true,
+        "progressBar": true,
         "positionClass": "toast-top-right",
-        "preventDuplicates": false,
-        "onclick": null,
-        "showDuration": "3000",
+        "preventDuplicates": true,
+        "onclick": function() {
+            window.location.href = '../../userdash/search/ha';
+        },
+        "showDuration": "6000",
         "hideDuration": "1000",
         "timeOut": "5000",
         "extendedTimeOut": "1000",

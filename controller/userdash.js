@@ -87,6 +87,7 @@ router.get('/appointment/:id', (req, res) => {
                     var cost = "";
                     if (req.cookies['status'] == "Verified:Premium") {
                         cost = (parseInt(results[0].charge) - (parseInt(results[0].charge) * 0.1)).toString();
+                        che = "pre";
                     } else if (req.cookies['status'] == "Verified:Finance") {
                         cost = "0";
                         che = "check";
@@ -261,8 +262,10 @@ router.post('/review/:id', (req, res) => {
 router.get('/search/:str', (req, res) => {
     if (req.cookies["cred"] != null && req.cookies["type"] == "Patient") {
         userModel.getDoctors(function(results) {
-            const result = results.filter(doc => doc.username.toLowerCase() === req.params.str.toLowerCase() ||
-                doc.specialization.toLowerCase() === req.params.str.toLowerCase());
+            const result = results.filter(doc => doc.username.toLowerCase().includes(req.params.str.toLowerCase()) ||
+                doc.specialization.toLowerCase().includes(req.params.str.toLowerCase()) ||
+                doc.email.toLowerCase().includes(req.params.str.toLowerCase())
+            );
             console.log(result);
             res.render('user/search', { Doctors: result });
         })

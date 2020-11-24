@@ -65,6 +65,20 @@
                 <%= Doctor[0].time %>
             </h4>
             <br>
+            <h4>Visiting Cost:
+                <% if(status == "pre") {%>
+                    <span class="line-through">
+                        <%=Doctor[0].charge %>
+                    </span>
+                    <%=charge %>
+                        <% } else if(status == "check"){ %>
+                            <span>Free</span>
+                            <% } else {%>
+                                <%=Doctor[0].charge %>
+                                    <% } %>
+
+            </h4>
+            <br>
 
             <div class="rs-select2 js-select-simple select--no-search">
                 <select id="date" name="date">
