@@ -54,8 +54,8 @@ module.exports = {
         });
     },
     verifyUser: function(email, callback) {
-        var verified = "verified";
-        var sql = "update users set type='" + verified + "' where email='" + email + "'";
+        var verified = "Verified";
+        var sql = "update users set status='" + verified + "' where email='" + email + "'";
         db.execute(sql, function(status) {
             callback(status);
         });

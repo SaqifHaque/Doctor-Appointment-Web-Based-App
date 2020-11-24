@@ -52,6 +52,7 @@ router.post('/', [
             msg = "exists";
             res.render('index/registration', { msg: msg });
         } else {
+            msg = "";
             const errors = validationResult(req)
             if (!errors.isEmpty()) {
                 console.log("validation failed");

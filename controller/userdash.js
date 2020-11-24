@@ -84,15 +84,17 @@ router.get('/appointment/:id', (req, res) => {
                         rating += reviews[j].rating;
                     }
                     rating = rating / reviews.length;
+                    var cost = "";
                     if (req.cookies['status'] == "Verified:Premium") {
-                        var cost = (parseInt(results[0].charge) - (parseInt(results[0].charge) * 0.1)).toString();
+                        cost = (parseInt(results[0].charge) - (parseInt(results[0].charge) * 0.1)).toString();
                     } else if (req.cookies['status'] == "Verified:Finance") {
-                        var cost = "0";
+                        cost = "0";
                         che = "check";
                     } else {
-                        var cost = results[0].charge;
+                        cost = results[0].charge;
                     }
-                    console.log(che);
+                    console.log(cost);
+                    console.log(req.cookies["status"]);
                     res.render('user/appointment', { charge: cost, Doctor: results, date: arr, time: arr2, reviews: reviews, avg: rating, status: che })
                 })
             })
@@ -115,7 +117,7 @@ router.post('/appointment/:id', [
     if (req.cookies["cred"] != null && req.cookies["type"] == "Patient") {
         const errors = validationResult(req)
         if (req.cookies["status"] == "Verified:Finance") {
-            const alert = errors.array();
+
             if (errors.length > 1) {
 
             } else {
@@ -138,10 +140,26 @@ router.post('/appointment/:id', [
             }
 
         } else {
-            if (!errors.isEmpty()) {
+            const alert = errors.array();
+            if (alert.length == 1 && req.body.cash == "cash") {
+                var app = {
+                    date: req.body.app_date,
+                    time: req.body.app_time,
+                    status: "pending",
+                    d_Id: req.params.id,
+                    u_Id: req.cookies["Id"],
+                    p_Id: ""
+
+                }
+                appointmentModel.insert(app, function(status) {
+                    if (status) {
+                        res.redirect('../apptable');
+                    }
+                })
+            } else if (!errors.isEmpty()) {
                 console.log("validation failed");
-                const alert = errors.array();
                 alert.forEach(myFunction);
+                const alert = errors.array();
 
                 function myFunction(item) {
                     console.log(item);
@@ -277,6 +295,7 @@ router.get('/apptable', (req, res) => {
                     userModel.getDoctorById(results[i].d_Id, function(result) {
                         doc = {
                             name: result[0].username,
+
                             date: app[j].date,
                             time: app[j].time,
                             status: app[j].status,
@@ -342,7 +361,11 @@ router.post('/myprofile', [
 })
 router.get('/membership', (req, res) => {
     if (req.cookies["cred"] != null && req.cookies["type"] == "Patient") {
-        res.render('user/membership')
+        if (req.cookies["status"] != "Verified") {
+            res.redirect('/userdash')
+        } else {
+            res.render('user/membership')
+        }
     } else {
         res.redirect('/login');
     }
@@ -435,7 +458,7 @@ router.post('/complain', [
                 }
                 complainModel.complainInsert(complain, function(status) {
                     if (status) {
-                        res.render('user/userdash');
+                        res.redirect('/userdash');
                     }
                 })
             }
@@ -483,7 +506,8 @@ router.post('/financial', [
             } else {
                 membershipModel.financeUpdate(req.cookies["Id"], function(status) {
                     if (status) {
-                        res.render('user/userdash');
+                        res.cookie('status', "Verified:Finance");
+                        res.redirect('/userdash');
                     }
                 })
             }
@@ -519,7 +543,8 @@ router.post('/premium', [
             } else {
                 membershipModel.premiumUpdate(req.cookies["Id"], function(status) {
                     if (status) {
-                        res.render('user/userdash');
+                        res.cookie('status', "Verified:Premium");
+                        res.redirect('/userdash');
                     }
 
                 })
