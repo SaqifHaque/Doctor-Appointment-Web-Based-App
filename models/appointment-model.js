@@ -35,5 +35,12 @@ module.exports = {
             callback(results);
         });
     },
+    cancel: function(id, callback) {
+        var cancel = "canceled";
+        var sql = "update appointments set status = '" + cancel + "' where ap_Id='" + id + "'";
+        db.getResults(sql, function(results) {
+            callback(results);
+        });
+    },
 
 }

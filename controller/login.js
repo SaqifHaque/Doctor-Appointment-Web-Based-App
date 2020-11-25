@@ -1,7 +1,7 @@
 const express = require('express');
 const userModel = require.main.require('./models/crud-model');
 const router = express.Router();
-
+const jwt = require("jsonwebtoken");
 let msg = "";
 
 router.get('/', (req, res) => {
@@ -28,12 +28,21 @@ router.post('/', (req, res) => {
                 res.cookie('type', results[0].type);
                 res.cookie('Id', results[0].id);
                 res.cookie('status', results[0].status);
+                // const data = {
+                //     username: results[0].username,
+                //     email: results[0].email,
+                // }
                 if (results[0].status != "Unverified") {
                     if (results[0].type == "Admin") {
                         // res.redirect('/registration');
                     } else if (results[0].type == "Doctor") {
                         //res.redirect('/registration');
                     } else if (results[0].type == "Patient") {
+                        // jwt.sign({ user: data }, "secretkey", { expiresIn: '1h' }, (err, token) => {
+                        //     console.log(token);
+                        //     res.cookie('token', token);
+                        //     console.log(req.cookies["token"]);
+                        // })
                         res.redirect('/userdash');
                     } else if (results[0].type == "Receptionist") {
                         //res.redirect('/registration');
@@ -50,5 +59,32 @@ router.post('/', (req, res) => {
         }
     });
 })
+
+// function verifyToken(req, res, next) {
+//     const bearerHeader = req.headers["authorization"];
+//     console.log(bearerHeader);
+//     if (typeof bearerHeader !== "undefined") {
+//         const bearerToken = bearerHeader.split(" ")[1];
+//         req.token = bearerToken;
+//         console.log(req.token);
+//         next();
+//     } else {
+//         res.sendStatus(403);
+//     }
+// }
+// router.get('/hello', (req, res) => {
+//     jwt.verify(req.cookies["token"], 'secretkey', (err, authData) => {
+//         if (err) {
+//             console.log(req.cookies["token"]);
+//             res.sendStatus(403);
+//         } else {
+//             res.json({
+//                 hello: "Hello"
+//             });
+//         }
+//     });
+// })
+
+
 
 module.exports = router;

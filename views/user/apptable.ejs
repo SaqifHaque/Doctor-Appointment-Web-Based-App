@@ -67,14 +67,18 @@
                     <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b text-center block lg:table-cell relative lg:static">
                         <% if(ap.status == "completed") { %>
                             <span class="lg:hidden absolute top-0 left-0 bg-blue-200 px-2 py-1 text-xs font-bold uppercase">Actions</span>
-                            <% if(ap.p_Id == "0") { %>
+                            <% if(ap.p_Id != "0") { %>
 
                                 <form method="POST" action="pdf/<%=ap.p_Id%>">
                                     <button type="submit" class="text-blue-400 hover:text-blue-600">Prescription</a>
                             </form>
-                            <%}%>
+                            <% } %>
                         <span class="lg:hidden absolute top-0 left-0 bg-blue-200 px-2 py-1 text-xs font-bold uppercase">Actions</span>
                         <a href="review/<%=ap.d_Id%>" class="rounded bg-green-400 block px-3 py-2 rounded-md text-base font-medium text-white bg-gray-900">Review</a>
+                        <% } else if(ap.status == "pending"){ %>
+                            <form method="POST" action="cancel/<%=ap.ap_Id%>">
+                                <button type="submit" class="text-red-400 hover:text-blue-600">Cancel</a>
+                        </form>
                         <% } %>
                     </td>
                 </tr>

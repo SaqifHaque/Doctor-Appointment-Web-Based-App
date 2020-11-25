@@ -16,7 +16,6 @@ require('dotenv').config();
 
 //config
 app.set('view engine', 'ejs');
-
 //middleware
 app.use('/assets', express.static('assets'));
 app.use(bodyParser.urlencoded({ extended: true }));

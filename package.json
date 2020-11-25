@@ -15,6 +15,7 @@
         "express-toastr": "^2.0.2",
         "express-validator": "^6.6.1",
         "html-pdf": "^2.2.0",
+        "jsonwebtoken": "^8.5.1",
         "mailgun-js": "^0.22.0",
         "mysql2": "^2.2.5",
         "nodemon": "^2.0.6"

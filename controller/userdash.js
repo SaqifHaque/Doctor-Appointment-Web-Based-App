@@ -12,6 +12,8 @@ const pdf = require('html-pdf');
 const options = { format: 'A4' };
 const fs = require('fs');
 const { check, validationResult } = require('express-validator');
+const jwt = require("jsonwebtoken");
+const verify = require("./login");
 var msg = "";
 
 router.post('/pdf/:id', (req, res) => {
@@ -219,6 +221,7 @@ router.get('/navbar', (req, res) => {
 router.get('/notice', (req, res) => {
     if (req.cookies["cred"] != null && req.cookies["type"] == "Patient") {
         noticeModel.getNotice(function(results) {
+
             res.send(JSON.stringify(results));
         })
     } else {
@@ -297,8 +300,8 @@ router.get('/apptable', (req, res) => {
 
                     userModel.getDoctorById(results[i].d_Id, function(result) {
                         doc = {
+                            ap_Id: app[j].ap_Id,
                             name: result[0].username,
-
                             date: app[j].date,
                             time: app[j].time,
                             status: app[j].status,
@@ -549,10 +552,7 @@ router.post('/premium', [
                         res.cookie('status', "Verified:Premium");
                         res.redirect('/userdash');
                     }
-
                 })
-
-
             }
         } else {
             res.redirect('/login');
@@ -572,6 +572,16 @@ router.get('/notices', (req, res) => {
     if (req.cookies["cred"] != null && req.cookies["type"] == "Patient") {
         noticeModel.getNotice(function(results) {
             res.render('user/notices', { notices: results });
+        })
+    } else {
+        res.redirect('/login');
+    }
+
+})
+router.post('/cancel/:id', (req, res) => {
+    if (req.cookies["cred"] != null && req.cookies["type"] == "Patient") {
+        appointmentModel.cancel(req.params.id, function(results) {
+            res.redirect("../apptable");
         })
     } else {
         res.redirect('/login');
