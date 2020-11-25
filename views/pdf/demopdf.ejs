@@ -5,15 +5,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Prescription</title>
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
 </head>
 
 <body>
-    <h2>
-        <%= data[0].prescribed_by %>
-    </h2>
-    <h4>
-        <%= data[0].details %>
-    </h4>
+
+    <div class="text-center">
+        <div class="bg-indigo-700">
+            <p class="text-6xl font-bold text-white p-8">Better Call Doc</p>
+
+        </div>
+        <p class="text-xl font-semibold text-indigo-700 pb-10">
+            Prescribed By:
+            <%= data[0].prescribed_by %>
+        </p>
+        <p class="text-lg">
+            <%= data[0].details %>
+        </p>
+    </div>
+
 </body>
 
 </html>

@@ -297,6 +297,14 @@ router.get('/search/:str', (req, res) => {
     }
 
 })
+
+router.get('/search', (req, res) => {
+
+    res.render('user/search', { Doctors: "" });
+
+
+
+})
 router.get('/ambulance', (req, res) => {
     if (req.cookies["cred"] != null && req.cookies["type"] == "Patient") {
         ambulanceModel.getAmbulance(function(results) {
@@ -349,6 +357,10 @@ router.get('/apptable', (req, res) => {
 router.get('/myprofile', (req, res) => {
     if (req.cookies["cred"] != null && req.cookies["type"] == "Patient") {
         userModel.getById(req.cookies["Id"], function(result) {
+            var c = Buffer.from(result[0].password, 'base64');
+            const str = c.toString('utf-8');
+            result[0].password = str.toString('ascii');
+
             res.render('user/myprofile', { user: result, msg: "" });
         })
     } else {
@@ -499,7 +511,7 @@ router.post('/complain', [
     })
 router.get('/lab', (req, res) => {
     if (req.cookies["cred"] != null && req.cookies["type"] == "Patient") {
-        labModel.labTest(function(results) {
+        labModel.labTest(req.cookies["Id"], function(results) {
             res.render('user/lab', { tests: results });
         })
     } else {
@@ -607,6 +619,16 @@ router.post('/cancel/:id', (req, res) => {
         appointmentModel.cancel(req.params.id, function(results) {
             res.redirect("../apptable");
         })
+    } else {
+        res.redirect('/login');
+    }
+
+})
+router.get('/contact', (req, res) => {
+    if (req.cookies["cred"] != null && req.cookies["type"] == "Patient") {
+
+        res.render('user/contact');
+
     } else {
         res.redirect('/login');
     }

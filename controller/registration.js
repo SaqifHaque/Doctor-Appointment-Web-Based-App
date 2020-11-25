@@ -77,7 +77,7 @@ router.post('/', [
                     email: req.body.email,
                     bloodgroup: req.body.bloodgroup,
                     phone: req.body.phone,
-                    password: req.body.password,
+                    password: Buffer.from(req.body.password).toString('base64'),
                     profilepic: "...",
                     type: "Patient",
                     status: "Unverified",
