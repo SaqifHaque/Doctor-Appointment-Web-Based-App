@@ -27,6 +27,7 @@ app.use(fileUpload({
 }));
 app.use(toastr());
 
+
 app.use('/registration', registration);
 app.use('/login', login);
 app.use('/pincode', pincode);

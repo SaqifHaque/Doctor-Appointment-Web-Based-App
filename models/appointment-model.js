@@ -16,8 +16,8 @@ module.exports = {
             callback(status);
         });
     },
-    getAppointments: function(callback) {
-        var sql = "select * from appointments";
+    getAppointments: function(id, callback) {
+        var sql = "select * from appointments where u_Id='" + id + "'";
 
         db.getResults(sql, function(results) {
             callback(results);

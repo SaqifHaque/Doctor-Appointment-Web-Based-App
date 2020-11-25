@@ -7,6 +7,7 @@ const noticeModel = require.main.require('./models/notice-model');
 const complainModel = require.main.require('./models/complain-model');
 const labModel = require.main.require('./models/lab-model');
 const membershipModel = require.main.require('./models/membership-model');
+const mailgun = require("mailgun-js");
 const router = express.Router();
 const pdf = require('html-pdf');
 const options = { format: 'A4' };
@@ -15,6 +16,7 @@ const { check, validationResult } = require('express-validator');
 const jwt = require("jsonwebtoken");
 const verify = require("./login");
 var msg = "";
+const mg = mailgun({ apiKey: process.env.MAILGUN_APIKEY, domain: process.env.DOMAIN });
 
 router.post('/pdf/:id', (req, res) => {
     appointmentModel.getPrescriptionById(req.params.id, function(result) {
@@ -135,6 +137,15 @@ router.post('/appointment/:id', [
                 }
                 appointmentModel.insert(app, function(status) {
                     if (status) {
+                        const data = {
+                            from: 'no-reply@BetterCallDoc.com',
+                            to: req.cookies["email"],
+                            subject: 'Email Verfication',
+                            text: 'Your Appointment has been scheduled - ' + app.date + " " + app.time
+                        };
+                        mg.messages().send(data, function(error, body) {
+                            console.log(body);
+                        });
                         res.redirect('../apptable');
                     }
 
@@ -186,6 +197,15 @@ router.post('/appointment/:id', [
                             date: new Date().toLocaleDateString(),
                             u_Id: req.cookies["Id"]
                         }
+                        const data = {
+                            from: 'no-reply@BetterCallDoc.com',
+                            to: req.cookies["email"],
+                            subject: 'Appointment',
+                            text: 'Your Appointment has been scheduled - ' + app.date + " " + app.time
+                        };
+                        mg.messages().send(data, function(error, body) {
+                            console.log(body);
+                        });
                         if (req.body.cash == "bkash") {
                             appointmentModel.insertInvoice(inv, function(status) {
                                 if (status) {
@@ -225,7 +245,7 @@ router.get('/notice', (req, res) => {
             res.send(JSON.stringify(results));
         })
     } else {
-        res.redirect('/login');
+        res.sendStatus(403);
     }
 
 })
@@ -290,32 +310,36 @@ router.get('/ambulance', (req, res) => {
 })
 router.get('/apptable', (req, res) => {
     if (req.cookies["cred"] != null && req.cookies["type"] == "Patient") {
-        appointmentModel.getAppointments(function(results) {
+        appointmentModel.getAppointments(req.cookies["Id"], function(results) {
             if (results.length > 0) {
                 var c = [];
-                for (var i = 0; i < results.length; i++) {
-                    var app = results;
-                    var doc = {};
-                    var j = 0;
+                if (results.length > 0) {
+                    for (var i = 0; i < results.length; i++) {
+                        var app = results;
+                        var doc = {};
+                        var j = 0;
 
-                    userModel.getDoctorById(results[i].d_Id, function(result) {
-                        doc = {
-                            ap_Id: app[j].ap_Id,
-                            name: result[0].username,
-                            date: app[j].date,
-                            time: app[j].time,
-                            status: app[j].status,
-                            p_Id: app[j].p_Id,
-                            d_Id: result[0].d_Id
-                        }
-                        console.log(doc.d_Id);
-                        c.push(doc);
-                        if (j == results.length - 1) {
-                            res.render('user/apptable', { app: c });
-                        }
-                        j++;
-                    })
+                        userModel.getDoctorById(results[i].d_Id, function(result) {
+                            doc = {
+                                ap_Id: app[j].ap_Id,
+                                name: result[0].username,
+                                date: app[j].date,
+                                time: app[j].time,
+                                status: app[j].status,
+                                p_Id: app[j].p_Id,
+                                d_Id: result[0].d_Id
+                            }
+                            console.log(doc.d_Id);
+                            c.push(doc);
+                            if (j == results.length - 1) {
+                                res.render('user/apptable', { app: c });
+                            }
+                            j++;
+                        })
+                    }
                 }
+            } else {
+                res.render('user/apptable', { app: c });
             }
         })
     } else {
@@ -325,7 +349,7 @@ router.get('/apptable', (req, res) => {
 router.get('/myprofile', (req, res) => {
     if (req.cookies["cred"] != null && req.cookies["type"] == "Patient") {
         userModel.getById(req.cookies["Id"], function(result) {
-            res.render('user/myprofile', { user: result });
+            res.render('user/myprofile', { user: result, msg: "" });
         })
     } else {
         res.redirect('/login');
@@ -350,7 +374,7 @@ router.post('/myprofile', [
         } else {
             var user = {
                 username: req.body.username,
-                password: req.body.password,
+                password: Buffer.from(req.body.password).toString('base64'),
                 id: req.cookies["Id"]
             }
             console.log(user);

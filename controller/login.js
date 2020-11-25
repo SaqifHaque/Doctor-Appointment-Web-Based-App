@@ -16,8 +16,9 @@ router.post('/', (req, res) => {
 
     var user = {
         email: req.body.email,
-        password: req.body.password
+        password: Buffer.from(req.body.password).toString('base64')
     };
+    console.log(user.password);
     userModel.validate(user, function(status) {
         if (status) {
             msg = "";
@@ -28,6 +29,7 @@ router.post('/', (req, res) => {
                 res.cookie('type', results[0].type);
                 res.cookie('Id', results[0].id);
                 res.cookie('status', results[0].status);
+                res.cookie('email', results[0].email);
                 // const data = {
                 //     username: results[0].username,
                 //     email: results[0].email,
