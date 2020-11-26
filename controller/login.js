@@ -43,7 +43,7 @@ router.post('/', (req, res) => {
                         // jwt.sign({ user: data }, "secretkey", { expiresIn: '1h' }, (err, token) => {
                         //     console.log(token);
                         //     res.cookie('token', token);
-                        //     console.log(req.cookies["token"]);
+                        //     res.json({ token: token })
                         // })
                         res.redirect('/userdash');
                     } else if (results[0].type == "Receptionist") {
@@ -69,13 +69,13 @@ router.post('/', (req, res) => {
 //         const bearerToken = bearerHeader.split(" ")[1];
 //         req.token = bearerToken;
 //         console.log(req.token);
-//         next();
+//         // next();
 //     } else {
 //         res.sendStatus(403);
 //     }
 // }
-// router.get('/hello', (req, res) => {
-//     jwt.verify(req.cookies["token"], 'secretkey', (err, authData) => {
+// router.get('/hello', verifyToken, (req, res) => {
+//     jwt.verify(req.token, 'secretkey', (err, authData) => {
 //         if (err) {
 //             console.log(req.cookies["token"]);
 //             res.sendStatus(403);

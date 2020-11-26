@@ -172,12 +172,6 @@ router.post('/appointment/:id', [
                 })
             } else if (!errors.isEmpty()) {
                 console.log("validation failed");
-                alert.forEach(myFunction);
-                const alert = errors.array();
-
-                function myFunction(item) {
-                    console.log(item);
-                }
             } else {
                 var app = {
                     date: req.body.app_date,
